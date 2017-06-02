@@ -14,7 +14,7 @@
 %   pair_r_cw: The acceleration component due to head rotation. (for debugging)
 %         P_c: 
 
- function [r_jc_c, pair_r_cw, P_c] = getAccNumLoc (l,w,h)
+ function [r_jc_c, pair_r_cw, P_c, invR] = getAccNumLoc (l,w,h)
  
     % 8 Accelerometers
     % (x y z)' in Strapdown Frame: (3 x 1)
@@ -44,6 +44,9 @@
     for i = 1:8
         P_c(:,3*(i-1)+1:3*i) = -(1/2)*crossop(r_jc_c(:,i));
     end 
+    
+    R = r_jc_c*r_jc_c';
+    invR = inv(R);
     
 %     r_ic_b_col = reshape(r_ic_b,3*numAcc,1);
  end

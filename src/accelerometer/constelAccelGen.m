@@ -23,7 +23,6 @@ function [r_jw_c_ddot, r_jc_c_ddot] = constelAccelGen(w_jc_c, w_jc_c_dot, t)
                    w(3), 0, -w(1);
                   -w(2), w(1), 0  ];   
               
-%     samplingRate = 100;	% Hz
     gAccel = -9.81;     % m/s^2
     r_cw_w_ddot = [0; 0; gAccel];
     
@@ -34,9 +33,7 @@ function [r_jw_c_ddot, r_jc_c_ddot] = constelAccelGen(w_jc_c, w_jc_c_dot, t)
     
     % Get the Location of Accelerometers
 %     [r_jc_c, pair_r_cw] = getAccNumLoc (l,w,h);
-    [r_jc_c, ~] = getAccNumLoc (l,w,h);
-%     R = r_jc_c*r_jc_c';
-%     invR = inv(R);
+    [r_jc_c, ~, ~, ~] = getAccNumLoc (l,w,h);
 
     % Intial quaterion position
     q0 = initialQuaternion (0,0,0); % assume coincident
