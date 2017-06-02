@@ -40,7 +40,7 @@ title('Magnetometer Measurements vs. Time');
 legend('m_x','m_y','m_z');
 
 %% Visualize
-color_strs = {'b','r','g','c','k'};
+color_strs = {'b','r','g','c','m'};
 i_body = [1,0,0]';
 j_body = [0,1,0]';
 k_body = [0,0,1]';
@@ -64,16 +64,24 @@ end
 
 %% Gravity vector
 % Want to see all vectors pointing in similar direction
+fprintf('Measured gravity vectors:\n');
 for i = 1:numel(color_strs)
     figure(h2); hold on;
     g_world = Quaternion.vec2world(Test.accel_meas(i,:)',Test.qs(i,:)');
+    fprintf('(x,y,z)=(%.2f,%.2f,%.2f)\n',g_world);
     quiver3(0,0,0,g_world(1),g_world(2),g_world(3),color_strs{i},'AutoScale','off');
 end
+quiver3(0,0,0,grav_vec(1),grav_vec(2),grav_vec(3),'k','AutoScale','off');
+fprintf('Truth gravity vector: (%.2f,%.2f,%.2f)\n', grav_vec);
   
 %% Magnetic field vector
 % Want to see all vectors pointing in similar direction
+fprintf('Measured magnetic field vectors:\n');
 for i = 1:numel(color_strs)
     figure(h3); hold on;
     m_world = Quaternion.vec2world(Test.mag_meas(i,:)',Test.qs(i,:)');
+    fprintf('(x,y,z)=(%.2f,%.2f,%.2f)\n',m_world);
     quiver3(0,0,0,m_world(1),m_world(2),m_world(3),color_strs{i},'AutoScale','off');
 end
+quiver3(0,0,0,field_vec(1),field_vec(2),field_vec(3),'k','AutoScale','off');
+fprintf('Truth magnetic field vector: (%.2f,%.2f,%.2f)\n', field_vec);

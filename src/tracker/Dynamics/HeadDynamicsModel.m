@@ -44,17 +44,30 @@ classdef HeadDynamicsModel
             end
             
             % Generate head-frame ("sensor inside the head") measurements
-            accel_mu = zeros(3,1); accel_sigma = 0.1^3*eye(3);
+            % Noise parameters based on imuAnalysis.m
+            accel_mu = zeros(3,1); 
+            accel_sigma = 1.0e-04*[0.1042, 0, 0.0004;
+                                0, 0.1010, -0.0005;
+                                0.0004, -0.0005, 0.2463];
             obj.accel = Accelerometer(obj, accel_mu, accel_sigma);
             
-            % FLAG: Set Gyro static bias
-            gyro_mu = zeros(3,1); gyro_sigma = 0.1^3*eye(3);
-            obj.gyro = Gyroscope(obj, gyro_mu, gyro_sigma);
+            % Noise parameters based on imuAnalysis.m
+            gyro_mu = zeros(3,1); 
+            gyro_sigma = [0.0073, 0, 0;
+                          0, 0.0091, 0;
+                          0, 0, 0.0075];
+            bias_scale = 1/10; % scale static bias down to simulate imperfect calibration
+            gyro_bias = bias_scale*[-0.0388, 0.1440, -0.1383];
+            obj.gyro = Gyroscope(obj, gyro_mu, gyro_sigma, gyro_bias);
             
-            mag_mu = zeros(3,1); mag_sigma = 0.1^3*eye(3);
+            % Noise parameters based on imuAnalysis.m
+            mag_mu = zeros(3,1); 
+            mag_sigma = 1.0e-06*[0.4017, -0.0353, 0.0255;
+                                -0.0353, 0.3963, -0.0061;
+                                 0.0255, -0.0061, 0.3319];            
             obj.mag = Magnetometer(obj, mag_mu, mag_sigma);
             
-            noisy = false; % FLAG: Enable for noise
+            noisy = true; % FLAG: Enable for noise
             obj.accel_meas = obj.accel.measurements(noisy);
             obj.gyro_meas = obj.gyro.measurements(noisy);
             obj.mag_meas = obj.mag.measurements(noisy);
