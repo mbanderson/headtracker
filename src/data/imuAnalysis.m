@@ -18,6 +18,9 @@ GX_COL = 8;
 GY_COL = 9;
 GZ_COL = 10;
 
+%%
+cov(A(:,[AX_COL,AY_COL,AZ_COL]))
+
 %% Gyro Time-Frequency Plots
 ts = A(:,T_COL) / 1000; % ms to seconds
 
@@ -50,6 +53,8 @@ rem_bias = @(col,bias) A(:,col) - bias;
 gx_nobias = rem_bias(GX_COL,gx_bias);
 gy_nobias = rem_bias(GY_COL,gy_bias);
 gz_nobias = rem_bias(GZ_COL,gz_bias);
+
+gcov = cov(A(:,[GX_COL, GY_COL, GZ_COL]));
 
 %% Perform Allan Variance Analysis
 % MPU-6050 Datasheet:

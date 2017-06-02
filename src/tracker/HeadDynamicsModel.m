@@ -7,13 +7,17 @@ classdef HeadDynamicsModel
     %
     
     properties
-        ts;
-        ws;
+        ts; % s
+        ws; % deg/s
         qs;
         
-        accel_meas;
-        gyro_meas;
-        mag_meas;
+        accel;
+        gyro;
+        mag;
+        
+        accel_meas; % m/s^2
+        gyro_meas; % deg/s
+        mag_meas; % 
         
         env_model;
     end
@@ -29,7 +33,7 @@ classdef HeadDynamicsModel
             obj.ts = t0:dt:tf;
             axis = 1; % w_x only
             
-            obj.ws = AxisAngVals(axis,obj.ts);
+            obj.ws = AxisAngVals(axis,obj.ts) * 180/pi;
             
             % Integrate quaternions over time history
             q0 = [1,0,0,0]';
@@ -39,7 +43,19 @@ classdef HeadDynamicsModel
             end
             
             % Generate head-frame ("sensor inside the head") measurements
+            accel_mu = zeros(3,1); accel_sigma = 0.1^3*eye(3);
+            obj.accel = Accelerometer(obj, accel_mu, accel_sigma);
             
+            gyro_mu = zeros(3,1); gyro_sigma = 0.1^3*eye(3);
+            obj.gyro = Gyroscope(obj, gyro_mu, gyro_sigma);
+            
+            mag_mu = zeros(3,1); mag_sigma = 0.1^3*eye(3);
+            obj.mag = Magnetometer(obj, mag_mu, mag_sigma);
+            
+            noisy = true;
+            obj.accel_meas = obj.accel.measurements(noisy);
+            obj.gyro_meas = obj.gyro.measurements(noisy);
+            obj.mag_meas = obj.mag.measurements(noisy);
         end 
     end
     
