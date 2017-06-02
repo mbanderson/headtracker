@@ -9,17 +9,18 @@ classdef HeadDynamicsModel
     properties
         ts; % s
         ws; % deg/s
-        qs;
+        qs; % quaternions
         
+        % Sensors
         accel;
         gyro;
         mag;
-        
+        % Simulated measurements
         accel_meas; % m/s^2
         gyro_meas; % deg/s
-        mag_meas; % 
+        mag_meas; % Gauss
         
-        env_model;
+        env_model; % Reference gravity, mag field vectors
     end
     
     methods
@@ -46,13 +47,14 @@ classdef HeadDynamicsModel
             accel_mu = zeros(3,1); accel_sigma = 0.1^3*eye(3);
             obj.accel = Accelerometer(obj, accel_mu, accel_sigma);
             
+            % FLAG: Set Gyro static bias
             gyro_mu = zeros(3,1); gyro_sigma = 0.1^3*eye(3);
             obj.gyro = Gyroscope(obj, gyro_mu, gyro_sigma);
             
             mag_mu = zeros(3,1); mag_sigma = 0.1^3*eye(3);
             obj.mag = Magnetometer(obj, mag_mu, mag_sigma);
             
-            noisy = true;
+            noisy = false; % FLAG: Enable for noise
             obj.accel_meas = obj.accel.measurements(noisy);
             obj.gyro_meas = obj.gyro.measurements(noisy);
             obj.mag_meas = obj.mag.measurements(noisy);

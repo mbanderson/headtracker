@@ -19,17 +19,3 @@ q = q0 + A*q0*dt;
 q = q / norm(q);
 
 end
-
-function xrot = vec_rot(x,q)
-    % Rotate (3x1 vector) by quaternion.
-    % INPUTS:
-    %   x - (3x1) input vector
-    %   q - (4x1) quaternion by which to rotate vector
-    % OUTPUTS:
-    %   xrot - (3x1) rotated vector
-    %
-    R = [1-2*q(3)^2-2*q(4)^2, 2*(q(2)*q(3)+q(1)*q(4)), 2*(q(2)*q(4)-q(1)*q(3));
-         2*(q(2)*q(3)-q(1)*q(4)), 1-2*q(2)^2-2*q(4)^2, 2*(q(3)*q(4)+q(1)*q(2));
-         2*(q(2)*q(4)+q(1)*q(3)), 2*(q(3)*q(4)-q(1)*q(2)), 1-2*q(2)^2-2*q(3)^2];
-    xrot = R*x; 
-end
