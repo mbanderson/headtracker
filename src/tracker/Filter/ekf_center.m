@@ -15,7 +15,8 @@ mag_expected = @(q) Quaternion.Rwb(q)*Model.env_model.field_vec;
 accel_jacob = @(q) norm(Model.env_model.grav_vec)*[2*q(3), 2*q(4), 2*q(1),2*q(2);
                                                   -2*q(2),-2*q(1), 2*q(4),2*q(3);
                                                    0     ,-4*q(2),-4*q(3),0];
-mag_jacob = @(q) magnetometer_jacob(Model.env_model.field_vec,q);                                     
+mag_jacob = @(q) magnetometer_jacob(Model.env_model.field_vec,q);
+                                     
 
 % accel_expected = @(q) Quaternion.Rbw(q)*Model.env_model.grav_vec;
 % mag_expected = @(q) Quaternion.Rbw(q)*Model.env_model.field_vec;
@@ -33,7 +34,7 @@ Q_mu = zeros(6,1);
 Q_sigma = 0.1*Model.dt^2*eye(6);
 
 R_mu = zeros(4,1);
-R_sigma = 0.1*Model.dt^2*eye(4);
+R_sigma = 0.1*eye(4);
 
 %% EKF
 % Initial state estimate
@@ -86,5 +87,6 @@ for i = 1:4
     title(sprintf('Quaternion: Component %d',i-1));
 end
 
+%% 
 
 
