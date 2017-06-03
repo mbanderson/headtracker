@@ -8,30 +8,16 @@ Model = HeadDynamicsModel();
 % Expected measurement models
 accel_expected = @(q) Quaternion.Rwb(q)*Model.env_model.grav_vec;
 mag_expected = @(q) Quaternion.Rwb(q)*Model.env_model.field_vec;
-%accel_expected = @(q) Quaternion.vec2body(Model.env_model.grav_vec,q);
-%mag_expected = @(q) Quaternion.vec2body(Model.env_model.field_vec,q);
 
 % Measurement Jacobians
 accel_jacob = @(q) norm(Model.env_model.grav_vec)*[2*q(3), 2*q(4), 2*q(1),2*q(2);
                                                   -2*q(2),-2*q(1), 2*q(4),2*q(3);
                                                    0     ,-4*q(2),-4*q(3),0];
 mag_jacob = @(q) magnetometer_jacob(Model.env_model.field_vec,q);
-                                     
-
-% accel_expected = @(q) Quaternion.Rbw(q)*Model.env_model.grav_vec;
-% mag_expected = @(q) Quaternion.Rbw(q)*Model.env_model.field_vec;
-% accel_jacob = @(q) 2*[-q(3), q(4), -q(1), q(2);
-%                        q(2), q(1),  q(4), q(3);
-%                        q(1), -q(2), -q(3), q(4)];
-% mag_jacob = @(q) 2*[q(4), q(3), q(2), q(1);
-%                     q(1), -q(2), -q(3), -q(4);
-%                     -q(2), -q(1), q(4), q(3)];
 
 %% Simulator Variables
-%Q_mu = zeros(4,1);
-%Q_sigma = 0.1*Model.dt^2*eye(4);
 Q_mu = zeros(6,1);
-Q_sigma = 0.1*Model.dt^2*eye(6);
+Q_sigma = blkdiag(Model.accel.sigma,Model.mag.sigma);
 
 R_mu = zeros(4,1);
 R_sigma = 0.1*eye(4);
