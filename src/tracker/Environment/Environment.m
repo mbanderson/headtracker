@@ -42,7 +42,7 @@ classdef Environment < handle
             % Returns magnetic field in Gauss, NED frame
             nT_vec = igrf(obj.date, obj.lat, obj.long, ...
                                  obj.alt, obj.frame)'; % nT
-            obj.field_vec = Environment.Tesla2Gauss(nT_vec / 10^9); % G 
+            obj.field_vec = Environment.Tesla2Gauss(nT_vec / 10^9); % G
         end
     end
         

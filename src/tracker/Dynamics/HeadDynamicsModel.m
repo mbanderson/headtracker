@@ -7,6 +7,7 @@ classdef HeadDynamicsModel
     %
     
     properties
+        dt; % s
         ts; % s
         ws; % deg/s
         qs; % quaternions
@@ -15,7 +16,7 @@ classdef HeadDynamicsModel
         accel;
         gyro;
         mag;
-        % Simulated measurements
+        % Simulated measurements, body frame
         accel_meas; % m/s^2
         gyro_meas; % deg/s
         mag_meas; % Gauss
@@ -29,9 +30,9 @@ classdef HeadDynamicsModel
             
             % Generate pre-defined angular velocity values
             t0 = 0;
-            dt = 0.1;
+            obj.dt = 0.1;
             tf = 100;
-            obj.ts = t0:dt:tf;
+            obj.ts = t0:obj.dt:tf;
             axis = 1; % w_x only
             
             obj.ws = AxisAngVals(axis,obj.ts) * 180/pi;
@@ -40,7 +41,7 @@ classdef HeadDynamicsModel
             q0 = [1,0,0,0]';
             obj.qs = zeros(numel(obj.ts),4); obj.qs(1,:) = q0;
             for i = 2:numel(obj.ts)
-                obj.qs(i,:) = QuatIntegration(obj.qs(i-1,:)',obj.ws(i-1,:)',dt);
+                [obj.qs(i,:),~] = QuatIntegration(obj.qs(i-1,:)',obj.ws(i-1,:)',obj.dt);
             end
             
             % Generate head-frame ("sensor inside the head") measurements
@@ -67,7 +68,7 @@ classdef HeadDynamicsModel
                                  0.0255, -0.0061, 0.3319];            
             obj.mag = Magnetometer(obj, mag_mu, mag_sigma);
             
-            noisy = true; % FLAG: Enable for noise
+            noisy = false; % FLAG: Enable for noise
             obj.accel_meas = obj.accel.measurements(noisy);
             obj.gyro_meas = obj.gyro.measurements(noisy);
             obj.mag_meas = obj.mag.measurements(noisy);
