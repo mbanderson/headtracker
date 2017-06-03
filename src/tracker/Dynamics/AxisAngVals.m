@@ -11,8 +11,8 @@ function [w] = AxisAngVals(axis,ts)
 
 narginchk(1,2);
 if nargin < 2
-    t0 = 0;
     dt = 0.1;
+    t0 = dt;
     tf = 100;
     ts = t0:dt:tf; % sim time, s
 end

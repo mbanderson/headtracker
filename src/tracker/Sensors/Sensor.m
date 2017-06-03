@@ -60,14 +60,15 @@ classdef Sensor
             
             % Acceleration model
             head_quats = obj.head_model.qs;
-            n_meas = size(head_quats,1);
+            n_meas = size(head_quats,1)-1;
             ys = zeros(n_meas,3);
             if strcmp(obj.type,obj.sensor_types{1})
                 % No linear acceleration at center of head, only consider
                 % gravity vector
                 grav_vec = obj.head_model.env_model.grav_vec;
                 for i = 1:n_meas
-                    ys(i,:) = Quaternion.vec2body(grav_vec,head_quats(i,:)');
+                    %ys(i,:) = Quaternion.vec2body(grav_vec,head_quats(i+1,:)');
+                    ys(i,:) = Quaternion.Rwb(head_quats(i+1,:)')*grav_vec;
                     if noisy
                         ys(i,:) = ys(i,:) + obj.sensor_noise();
                     end
@@ -86,7 +87,8 @@ classdef Sensor
             elseif strcmp(obj.type,obj.sensor_types{3})
                 field_vec = obj.head_model.env_model.field_vec;
                 for i = 1:n_meas
-                    ys(i,:) = Quaternion.vec2body(field_vec,head_quats(i,:)');
+                    %ys(i,:) = Quaternion.vec2body(field_vec,head_quats(i+1,:)');
+                    ys(i,:) = Quaternion.Rwb(head_quats(i+1,:)')*field_vec;
                     if noisy
                         ys(i,:) = ys(i,:) + obj.sensor_noise();
                     end

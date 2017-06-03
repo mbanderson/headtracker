@@ -1,5 +1,6 @@
 %% Single-Stage EKF with Center of Head Measurements
 %
+clear Model; close all; clc;
 %% Simulate Head Movement and Measurements
 Model = HeadDynamicsModel();
 
@@ -7,6 +8,9 @@ Model = HeadDynamicsModel();
 % Expected measurement models
 accel_expected = @(q) Quaternion.Rwb(q)*Model.env_model.grav_vec;
 mag_expected = @(q) Quaternion.Rwb(q)*Model.env_model.field_vec;
+%accel_expected = @(q) Quaternion.vec2body(Model.env_model.grav_vec,q);
+%mag_expected = @(q) Quaternion.vec2body(Model.env_model.field_vec,q);
+
 % Measurement Jacobians
 accel_jacob = @(q) norm(Model.env_model.grav_vec)*[2*q(3), 2*q(4), 2*q(1),2*q(2);
                                                   -2*q(2),-2*q(1), 2*q(4),2*q(3);
@@ -36,30 +40,30 @@ R_sigma = 0.1*Model.dt^2*eye(4);
 mu = [1,0,0,0]';
 sigma = 50000*eye(4);
 
-mu_hist = zeros(numel(Model.ts),4); mu_hist(1,:) = mu;
-sigma_hist = cell(numel(Model.ts),1); sigma_hist{1} = sigma;
+mu_hist = zeros(numel(Model.ts)+2,4); mu_hist(1,:) = mu;
+sigma_hist = cell(numel(Model.ts)+2,1); sigma_hist{1} = sigma;
 
-for i = 1:numel(Model.ts)-1
+for i = 1:numel(Model.ts)+1 
    w = Model.ws(i,:)';
  
    % True State (no process noise)
-   q = Model.qs(i,:)'; % Current q
-   q = Model.qs(i+1,:)'; % "State Update" to next q
+   q = Model.qs(i+1,:)'; % Updated q
    % Sensor Measurements in True State (with Noise)
-   gyro_meas = Model.gyro_meas(i,:)';   
+   gyro_meas = Model.gyro_meas(i,:)'; % i since no initial measurement
    accel_meas = Model.accel_meas(i,:)';
    mag_meas = Model.mag_meas(i,:)';
    
    y = vertcat(accel_meas,mag_meas);
 
    % Update accel Jacobian
+   A = dynamics_jacob(gyro_meas,Model.dt);
    H1 = accel_jacob(mu);
    H2 = mag_jacob(mu);
    C = vertcat(H1,H2);
    
    % EKF Predict
    % Propagate estimated quaternion forward
-   [mu,A] = QuatIntegration(mu,gyro_meas,Model.dt);
+   mu = QuatIntegration(mu,gyro_meas,Model.dt);
    % Propagate covariance forward
    sigma = A*sigma*A' + R_sigma;
    
@@ -75,9 +79,10 @@ for i = 1:numel(Model.ts)-1
 end
 
 %% Plot Simulation Results
+t_hist = horzcat(0,Model.ts);
 for i = 1:4
     figure();
-    plot(Model.ts,[Model.qs(:,i),mu_hist(:,i)]);
+    plot(t_hist,[Model.qs(1:end-1,i),mu_hist(1:end-1,i)]);
     title(sprintf('Quaternion: Component %d',i-1));
 end
 

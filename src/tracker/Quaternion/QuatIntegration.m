@@ -1,4 +1,4 @@
-function [q,A] = QuatIntegration(q0,w,dt)
+function [q] = QuatIntegration(q0,w,dt)
 %QUATINTEGRATION Performs numerical integration of input quaternion.
 %   The subsequent quaternion resulting from angular velocity w given by:
 %       q_{t+1} = q_t + Aq_tdt
@@ -8,7 +8,6 @@ function [q,A] = QuatIntegration(q0,w,dt)
 %       dt - (float) time discretization step
 %   OUTPUTS:
 %       q - (4x1 float vec) resulting quaternion
-%       A - (4x4) quaternion dynamics matrix
 %
 
 omega = [0, -w(3), w(2);
