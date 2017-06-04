@@ -33,7 +33,7 @@ classdef HeadDynamicsModel
             t0 = obj.dt;
             tf = 100;
             obj.ts = t0:obj.dt:tf;
-            axis = 1; % w_x only
+            axis = 2; % single axis w only
             
             w0 = [0,0,0];
             obj.ws = vertcat(w0, AxisAngVals(axis,obj.ts) * 180/pi);

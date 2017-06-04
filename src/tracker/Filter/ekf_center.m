@@ -73,6 +73,10 @@ for i = 1:4
     title(sprintf('Quaternion: Component %d',i-1));
 end
 
-%% 
+%% Write Quaternion Histories to File
+fname1 = 'q_hist.txt';
+dlmwrite(fname1,Model.qs);
 
+fname2 = 'mu_hist.txt';
+dlmwrite(fname2,mu_hist);
 
