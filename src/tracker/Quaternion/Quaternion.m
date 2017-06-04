@@ -48,13 +48,14 @@ classdef Quaternion
             %   OUTPUTS:
             %       R - (3x3) body-to-world rotation matrix
             %
-            R = [1-2*q(3)^2-2*q(4)^2, 2*(q(2)*q(3)+q(1)*q(4)), 2*(q(2)*q(4)-q(1)*q(3));
-                 2*(q(2)*q(3)-q(1)*q(4)), 1-2*q(2)^2-2*q(4)^2, 2*(q(3)*q(4)+q(1)*q(2));
-                 2*(q(2)*q(4)+q(1)*q(3)), 2*(q(3)*q(4)-q(1)*q(2)), 1-2*q(2)^2-2*q(3)^2];
+            R = Rwb(q)';
         end
+        
         function R = Rwb(q)
             % Produce rotation matrix from world to body
-            R = Quaternion.Rbw(q)';
+            R = [q(1)^2+q(2)^2-q(3)^2-q(4)^2, 2*q(2)*q(3)+2*q(1)*q(4), 2*q(2)*q(4)-2*q(1)*q(3);
+                 2*q(2)*q(3)-2*q(1)*q(4), q(1)^2-q(2)^2+q(3)^2-q(4)^2, 2*q(3)*q(4)+2*q(1)*q(2);
+                 2*q(2)*q(4)+2*q(1)*q(3), 2*q(3)*q(4)-2*q(1)*q(2), q(1)^2-q(2)^2-q(3)^2+q(4)^2];
         end
     end
     
