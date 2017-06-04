@@ -67,7 +67,6 @@ classdef Sensor
                 % gravity vector
                 grav_vec = obj.head_model.env_model.grav_vec;
                 for i = 1:n_meas
-                    %ys(i,:) = Quaternion.vec2body(grav_vec,head_quats(i+1,:)');
                     ys(i,:) = Quaternion.Rwb(head_quats(i+1,:)')*grav_vec;
                     if noisy
                         ys(i,:) = ys(i,:) + obj.sensor_noise();
@@ -87,7 +86,6 @@ classdef Sensor
             elseif strcmp(obj.type,obj.sensor_types{3})
                 field_vec = obj.head_model.env_model.field_vec;
                 for i = 1:n_meas
-                    %ys(i,:) = Quaternion.vec2body(field_vec,head_quats(i+1,:)');
                     ys(i,:) = Quaternion.Rwb(head_quats(i+1,:)')*field_vec;
                     if noisy
                         ys(i,:) = ys(i,:) + obj.sensor_noise();

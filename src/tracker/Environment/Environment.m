@@ -36,13 +36,15 @@ classdef Environment < handle
     methods (Access = private)
         function updateGravityVector(obj)
             % Returns gravity vector in m/s^2, NED frame
-            obj.grav_vec = [0, 0, obj.g]';
+            %obj.grav_vec = [0, 0, obj.g]';
+            obj.grav_vec = [0,0,1]';
         end
         function updateFieldVector(obj)            
             % Returns magnetic field in Gauss, NED frame
             nT_vec = igrf(obj.date, obj.lat, obj.long, ...
                                  obj.alt, obj.frame)'; % nT
-            obj.field_vec = Environment.Tesla2Gauss(nT_vec / 10^9); % G
+            %obj.field_vec = Environment.Tesla2Gauss(nT_vec / 10^9); % G
+            obj.field_vec = [0,1,0]';
         end
     end
         

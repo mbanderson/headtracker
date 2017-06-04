@@ -48,7 +48,7 @@ classdef Quaternion
             %   OUTPUTS:
             %       R - (3x3) body-to-world rotation matrix
             %
-            R = Rwb(q)';
+            R = Quaternion.Rwb(q)';
         end
         
         function R = Rwb(q)
