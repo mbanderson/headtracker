@@ -80,3 +80,53 @@ dlmwrite(fname1,Model.qs);
 fname2 = 'mu_hist.txt';
 dlmwrite(fname2,mu_hist);
 
+%% Create simulation animation
+% Lock down figure parameters
+figure();
+
+gifname = 'test_noise.gif';
+colorstrs = {'b','r','g'};
+truth_origin = {-0.75,0,0}; est_origin = {0.75,0,0};
+
+nquats = size(Model.qs,1);
+i_body = [1,0,0]'; j_body = [0,1,0]'; k_body = [0,0,1]';
+% Plot rotation from each quaternion
+for i = 1:nquats-1
+   truth = Model.qs(i,:)';
+   est = mu_hist(i,:)';
+   
+   truth_R = Quaternion.Rbw(truth);
+   est_R = Quaternion.Rbw(est);
+   
+   % Generate world-frame axes
+   truth_i = truth_R*i_body; truth_j = truth_R*j_body; truth_k = truth_R*k_body;
+   truth_vecs = {truth_i,truth_j,truth_k};
+   est_i = est_R*i_body; est_j = est_R*j_body; est_k = est_R*k_body;
+   est_vecs = {est_i,est_j,est_k};
+   
+   % Plot arrows
+   for j = 1:3
+       t_vec = truth_vecs{j}; e_vec = est_vecs{j};
+       quiver3(truth_origin{:},t_vec(1),t_vec(2),t_vec(3),...
+           'AutoScale','off','color',colorstrs{j},'LineStyle','-'); 
+       hold on;
+       quiver3(est_origin{:},e_vec(1),e_vec(2),e_vec(3),...
+           'AutoScale','off','color',colorstrs{j},'LineStyle',':');
+   end
+   hold off;
+   
+   % Record
+   title(sprintf('Truth (Left) vs. Filter (Right)\nt=%.2f',t_hist(i)),'FontSize',15);
+   axis manual;
+   xlim([-1.1,1.1]); ylim([-1.1,1.1]); zlim([-1.1,1.1]);
+   set(gca,'XTick',[],'YTick',[],'ZTick',[]);
+   drawnow; frame = getframe;
+   im = frame2im(frame);
+   [imind,cm] = rgb2ind(im,256);
+   if i == 1
+       imwrite(imind,cm,gifname,'gif','Loopcount',inf);
+   else
+       imwrite(imind,cm,gifname,'gif','WriteMode','append');
+   end
+end
+

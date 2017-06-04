@@ -58,7 +58,7 @@ classdef HeadDynamicsModel
             gyro_sigma = [0.0073, 0, 0;
                           0, 0.0091, 0;
                           0, 0, 0.0075];
-            bias_scale = 1/50; % scale static bias down to simulate imperfect calibration
+            bias_scale = 1/200; % scale static bias down to simulate imperfect calibration
             gyro_bias = bias_scale*[-0.0388, 0.1440, -0.1383];
             obj.gyro = Gyroscope(obj, gyro_mu, gyro_sigma, gyro_bias);
             
@@ -69,7 +69,7 @@ classdef HeadDynamicsModel
                                  0.0255, -0.0061, 0.3319];            
             obj.mag = Magnetometer(obj, mag_mu, mag_sigma);
             
-            noisy = false; % FLAG: Enable for noise
+            noisy = true; % FLAG: Enable for noise
             obj.accel_meas = obj.accel.measurements(noisy);
             obj.gyro_meas = obj.gyro.measurements(noisy);
             obj.mag_meas = obj.mag.measurements(noisy);
