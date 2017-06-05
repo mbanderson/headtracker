@@ -46,7 +46,7 @@ function [r_jw_c_ddot, r_jc_c_ddot, r_cw_c_ddot] = constelAccelGen(w_jc_c, w_jc_
     r_cw_c_ddot = zeros(24,tf);
     r_jw_c_ddot = zeros(24,tf);
     
-    for i = 1:tf-1
+    for i = 1:tf
         
         W_c_j = crossop(w_jc_c_dot(:,i)) + ( crossop(w_jc_c(:,i)) * crossop(w_jc_c(:,i)) );
         for n = 1:8

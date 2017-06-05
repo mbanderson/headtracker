@@ -2,7 +2,7 @@
 % Jin Woo Park
 % June 1, 2017
 
-function DCM = getDCM(q)
+function DCM = getRw2b(q)
 
 % Computes the Directional Cosine Matrix (Rotation Matrix) for given
 % quaternion.
