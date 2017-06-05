@@ -19,7 +19,7 @@ function [w_jc_c_TA, w_jc_c_CANP] = constelAngVel(W, w_jc_c_dot_est, deltaT, w_j
 
 %% TA Method
 % time at t-1;
-if nargin(3) % unknown initial condition (i.e., estimate using constellation only)
+if nargin == 3 % unknown initial condition (i.e., estimate using constellation only)
     W_centripetal = (1/2)*(W + W');
     W_extract = (-1/2)*trace(W_centripetal)*eye(3) + W_centripetal;
     w_jc_c0_abs = [ sqrt(W_extract(1,1)); sqrt(W_extract(2,2)); sqrt(W_extract(3,3))];
@@ -105,7 +105,7 @@ adjMat = @(Mat) cofactor(Mat)';
 %     xi_31 = s_13 - W_centripetal(3,1)*W_centripetal(2,2);
 
     Xb = W_centripetal - lambda*ones(3);
-    v_b = adjMat(Xb)*w_jc_c_TA' ;
+    v_b = adjMat(Xb)*w_jc_c_TA ;
 
     w_jc_c_CANP = ( w_ba_b_CANP_abs / norm(v_b) ) * v_b';
 
