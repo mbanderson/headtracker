@@ -18,14 +18,14 @@
  
     % 8 Accelerometers
     % (x y z)' in Strapdown Frame: (3 x 1)
-    r_jc_c(:,1) = [ l/2   -w/2   h/2]';
-    r_jc_c(:,2) = [ l/2    w/2   h/2]';
-    r_jc_c(:,3) = [ l/2   -w/2  -h/2]';
-    r_jc_c(:,4) = [ l/2    w/2  -h/2]';
-    r_jc_c(:,5) = [-l/2   -w/2   h/2]';
-    r_jc_c(:,6) = [-l/2    w/2   h/2]';
-    r_jc_c(:,7) = [-l/2   -w/2  -h/2]';
-    r_jc_c(:,8) = [-l/2    w/2  -h/2]';
+    r_jc_c(:,1) = [ l   -w   h]';
+    r_jc_c(:,2) = [ l    w   h]';
+    r_jc_c(:,3) = [ l   -w  -h]';
+    r_jc_c(:,4) = [ l    w  -h]';
+    r_jc_c(:,5) = [-l   -w   h]';
+    r_jc_c(:,6) = [-l    w   h]';
+    r_jc_c(:,7) = [-l   -w  -h]';
+    r_jc_c(:,8) = [-l    w  -h]';
 
     % Simply, adding all sensor readouts and divide by numAcc will give r_co_c_ddot 
     % This Matrix is Pairing Symmetric Points

@@ -4,11 +4,9 @@
 % Jin Woo Park
 % June 4, 2017
 
-clear all
-close all
-clc
-
-load('model.mat');
+% clear all
+% close all
+% clc
 
 %% Initial conditions
 
@@ -83,7 +81,7 @@ for i = 1:N
 end
 
 %% Plots
-
+%{
 figure(1); clf;
 for j = 1:3
     subplot(3,1,j); hold on; grid on
@@ -112,3 +110,4 @@ for j = 1:3
     if j == 3, ylim([-10 10]), end
     title(['$\ddot{r}^{cw}_{w,' num2str(j) '}$'], 'interpreter', 'latex', 'fontsize', 12);
 end
+%}
