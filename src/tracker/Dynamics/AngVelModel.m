@@ -1,17 +1,14 @@
-function [ys] = AngVelModel(T,ysat,ts)
-%ANGVELMODEL Represents angular velocity as a saturated sine wave.
+function [w_handle,wdot_handle] = AngVelModel(T,amp)
+%ANGVELMODEL Represents angular velocity as sine wave.
 %   INPUTS:
 %       T - (float) sine wave period
-%       ysat - (float) maximum angular rate, RAD/S
-%       ts - (Nx1 float vec) time domain at which to evaluate function
+%       amp - (float) sine wave amplitude, RAD/S
 %   OUTPUTS:
-%       ys - (Nx1 float vec) function values on input time domain
+%       w_handle - (ftn handle) angular velocity f(t)
+%       wdot_handle - (ftn handle) angular acceleration f(t)
 %
 
-% Generate unsaturated sine wave, then apply saturation
-unsat = sin(2*pi/T .* ts);
-satftn = @(val) (ysat*sign(val))*(abs(val) > ysat) + ...
-                val*(abs(val) <= ysat);
-ys = arrayfun(satftn, unsat);
+w_handle = @(t) amp*sin(2*pi/T .* t);
+wdot_handle = @(t) 2*pi/T*amp*cos(2*pi/T .* t);
 
 end

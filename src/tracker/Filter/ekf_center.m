@@ -1,13 +1,24 @@
 %% Single-Stage EKF with Center of Head Measurements
 %
 clear Model; close all; clc;
+wrapToPi = @(x) mod(x+pi,2*pi)-pi;
 %% Simulate Head Movement and Measurements
 Model = HeadDynamicsModel();
 
+% () = a_g + (wdot + w x w)*r + v
+% Want a_g
+
+% Ground truth in the body frame:
+% a_truth_body = a_truth_grav_vec + (wdot_truth + w_truth x w_ruth)*offset
+% + v
+%
+% a_expected = a_g_expected + (gyrodot + w_gyro x w_gyro)*offset + v
+% a_expected = Rwb(mu) + (gyrodot + gyro x gyro)*offset + v
+
+
 %% Helper Functions
 % Expected measurement models
-%accel_expected = @(q) Quaternion.Rwb(q)*Model.env_model.grav_vec;
-%mag_expected = @(q) Quaternion.Rwb(q)*Model.env_model.field_vec;
+% Accelerometer model, Jacobian
 accel_expected = @(q) [2*q(2)*q(4)-2*q(1)*q(3);
                        2*q(1)*q(2)+2*q(3)*q(4);
                        q(1)^2-q(2)^2-q(3)^2+q(4)^2];
@@ -15,21 +26,13 @@ accel_jacob = @(q) [-2*q(3), 2*q(4), -2*q(1), 2*q(2);
                     2*q(2),  2*q(1), 2*q(4), 2*q(3);
                     2*q(1), -2*q(2) -2*q(3), 2*q(4)];
 
+% Magnetometer model, Jacobian
 mag_expected = @(q) [2*q(2)*q(3)+2*q(1)*q(4);
                      q(1)^2-q(2)^2+q(3)^2-q(4)^2;
-                     2*q(3)*q(4)-2*q(1)*q(2)];
-
-                    
+                     2*q(3)*q(4)-2*q(1)*q(2)];                   
 mag_jacob = @(q) [2*q(4), 2*q(3), 2*q(2), 2*q(1);
                   2*q(1), -2*q(2), 2*q(3), -2*q(4);
                   -2*q(2), -2*q(1), 2*q(4), 2*q(3)];
-% Measurement Jacobians
-%{
-accel_jacob = @(q) norm(Model.env_model.grav_vec)*[2*q(3), 2*q(4), 2*q(1),2*q(2);
-                                                  -2*q(2),-2*q(1), 2*q(4),2*q(3);
-                                                   0     ,-4*q(2),-4*q(3),0];
-%}
-%mag_jacob = @(q) magnetometer_jacob(Model.env_model.field_vec,q);
 
 %% Simulator Variables
 Q_mu = zeros(6,1);
@@ -96,6 +99,28 @@ dlmwrite(fname1,Model.qs);
 fname2 = 'mu_hist.txt';
 dlmwrite(fname2,mu_hist);
 
+%% Compute RMS Error
+% http://mathworld.wolfram.com/Quaternion.html
+quat_inv = @(q) [q(1); -q(2:4)];
+quat_mult = @(a,b) [a(1)*b(1)-a(2)*b(2)-a(3)*b(3)-a(4)*b(4);
+                    a(1)*b(2)+a(2)*b(1)+a(3)*b(4)-a(4)*b(3);
+                    a(1)*b(3)-a(2)*b(4)+a(3)*b(1)+a(4)*b(2);
+                    a(1)*b(4)+a(2)*b(3)-a(3)*b(2)+a(4)*b(1)];
+
+nquats = size(Model.qs,1);
+errs = zeros(nquats,4);
+for i = 1:nquats
+    q_true = Model.qs(i,:)';
+    q_est = mu_hist(i,:)';
+    z = quat_mult(q_true,quat_inv(q_est));
+    e_i = 2*asin(z);
+    e_i = [e_i(1); 180/pi*wrapToPi(e_i(2:4))];
+    errs(i,:) = e_i;
+end
+RMS = sqrt(1/nquats*sum(errs.^2));
+fprintf('RMS Error for (x,y,z)');
+
+
 %% Create simulation animation
 user = input('Create output gif? [y/n]: ','s');
 if strcmp(user,'y')
@@ -108,7 +133,7 @@ if strcmp(user,'y')
     truth_origin = {-0.75,0,0}; est_origin = {0.75,0,0};
     
     nquats = size(Model.qs,1);
-    i_body = [1,0,0]'; j_body = [0,1,0]'; k_body = [0,0,1]';
+    i_body = [1,0,0]'; j_body = [0,1,0]'; k_body = [0,0,-1]';
     % Plot rotation from each quaternion
     for i = 1:nquats / 2 % just doing HALF right now
         truth = Model.qs(i,:)';
