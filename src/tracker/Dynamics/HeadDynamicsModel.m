@@ -33,9 +33,9 @@ classdef HeadDynamicsModel
             obj.env_model = Environment();
             
             % Generate pre-defined angular velocity values
-            obj.dt = 0.1;
+            obj.dt = 0.01;
             t0 = obj.dt;
-            tf = 100;
+            tf = 60;
             obj.ts = t0:obj.dt:tf;
             
             % Get w, wdot values
