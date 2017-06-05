@@ -13,7 +13,7 @@ clc
 
 noisy = true;%false;
 samplingRate = 100;
-tf = 300;
+tf = 50;
 tspan = 0:(1/samplingRate):tf;
 N = length(tspan);
 
@@ -87,7 +87,7 @@ for j = 1:3
     subplot(3,1,j); hold on; grid on
     plot(tspan, w_jc_c(j,:),'linew', 2)
     plot(tspan, w_jc_c_TA(j,:),'r--', 'linew', 2)
-    plot(tspan, w_jc_c_CANP(j,:),'k:','linew', 2) 
+%     plot(tspan, w_jc_c_CANP(j,:),'k:','linew', 2) 
 %     ylim([-0.5 0.5])
     legend('True','TA','CANP', 'location', 'best');
     title(['$\omega^{jc}_{c,' num2str(j) '}$'], 'interpreter', 'latex', 'fontsize', 12);
