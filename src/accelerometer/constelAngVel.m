@@ -52,8 +52,8 @@ w_jc_c_TA = w_jc_c_TA + (1/2) * deltaT * ...
 adjMat = @(Mat) cofactor(Mat)';
 
 % 1st IF STATEMENT
-    if w_jc_c_TA == zeros(1,3)
-        w_jc_c_CANP = zeros(1,3);
+    if w_jc_c_TA == zeros(3,1)
+        w_jc_c_CANP = zeros(3,1);
     end
 
     i = 1;

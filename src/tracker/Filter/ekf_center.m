@@ -118,8 +118,7 @@ for i = 1:nquats
     errs(i,:) = e_i;
 end
 RMS = sqrt(1/nquats*sum(errs.^2));
-fprintf('RMS Error for (x,y,z)');
-
+fprintf('RMS Error for (x,y,z):\n'); disp(RMS);
 
 %% Create simulation animation
 user = input('Create output gif? [y/n]: ','s');

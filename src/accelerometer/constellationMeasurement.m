@@ -27,8 +27,7 @@ function [w_jc_c_est, w_jc_c_dot_est, r_cw_c_ddot_est, accel_meas_offset] = ...
     %% Get Accelerometer Quantity and Location
     [r_jc_c, pair_r_cw, P_c, invR] = getAccNumLoc (0.04,0.04,0.04);
 
-    %% The Equation of Motion of the Brick (NEED ANGULAR VELOCITY)
-
+    %% The Equation of Motion of the Brick (NEED ANGULAR VELOCITY)    
     w_jc_c = deg2rad(Model.ws)';
     w_jc_c_dot = deg2rad(Model.wdots)';
 %     w_jc_c_dot = [diff(w_jc_c(1,:));diff(w_jc_c(2,:));diff(w_jc_c(3,:))]/dt;
