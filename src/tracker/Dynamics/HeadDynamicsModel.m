@@ -9,8 +9,8 @@ classdef HeadDynamicsModel
     properties
         dt; % s
         ts; % s
-        ws; % deg/s
-        wdots; % deg/s
+        ws; % rad/s
+        wdots; % rad/s
         qs; % quaternions
         
         % Sensors
@@ -33,13 +33,12 @@ classdef HeadDynamicsModel
     end
     
     methods
-        function obj = HeadDynamicsModel()
+        function obj = HeadDynamicsModel(tf)
             obj.env_model = Environment();
             
             % Generate pre-defined angular velocity values
             obj.dt = 0.01;
             t0 = obj.dt;
-            tf = 60;
             obj.ts = t0:obj.dt:tf;
             
             % Get w, wdot values
@@ -77,7 +76,7 @@ classdef HeadDynamicsModel
             gyro_sigma = pi/180*[0.0073, 0, 0;
                                  0, 0.0091, 0;
                                  0, 0, 0.0075];
-            gyro_bias = pi/180*[-0.0388, 0.1440, -0.1383];
+            gyro_bias = 50 * pi/180*[-0.0388, 0.1440, -0.1383];
             obj.gyro = Gyroscope(obj, gyro_mu, gyro_sigma, gyro_bias);
             
             % Noise parameters based on imuAnalysis.m
