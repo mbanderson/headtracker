@@ -1,4 +1,4 @@
-function [rms,errs] = ekf(gyro_type,accel_type,tf,gifname)
+function [rms,errs] = ekf(gyro_type,accel_type,tf,noisy,gifname)
 %EKF Implements EKF filter for head-tracking.
 %   INPUTS:
 %       gyro_type - (int) Flag to indicate angular rate measurement type
@@ -13,11 +13,12 @@ function [rms,errs] = ekf(gyro_type,accel_type,tf,gifname)
 %               4: constellation accelerometer measurements
 %
 %       tf - (float) final simulation time
+%       noisy - (bool) turn noise on
 %       gifname - (str)(optional) gif file name (include extension .gif)
 %
 
-narginchk(3,4);
-if nargin < 4
+narginchk(4,5);
+if nargin < 5
     gifname = ''; record = false;
 end
 if ~strcmp(gifname,'')
@@ -27,7 +28,7 @@ wrapToPi = @(x) mod(x+pi,2*pi)-pi;
 
 %% Single-Stage EKF with Center of Head Measurements
 %% Simulate Head Movement and Measurements
-Model = HeadDynamicsModel(tf);
+Model = HeadDynamicsModel(tf,noisy);
 
 % Define sampler functions based on input parameters
 % Gyroscope Model

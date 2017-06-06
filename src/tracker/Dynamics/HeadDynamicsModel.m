@@ -33,7 +33,7 @@ classdef HeadDynamicsModel
     end
     
     methods
-        function obj = HeadDynamicsModel(tf)
+        function obj = HeadDynamicsModel(tf,noisy)
             obj.env_model = Environment();
             
             % Generate pre-defined angular velocity values
