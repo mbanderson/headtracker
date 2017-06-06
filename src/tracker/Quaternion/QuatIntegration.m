@@ -15,7 +15,7 @@ omega = [0, -w(3), w(2);
         -w(2), w(1), 0];
 A = 1/2*[0, -w';
          w, omega];
-q = (eye(4) - A*dt)*q0;
+q = (eye(4) + A*dt)*q0;
 q = q / norm(q);
 
 end

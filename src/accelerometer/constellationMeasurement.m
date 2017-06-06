@@ -28,8 +28,8 @@ function [w_jc_c_est, w_jc_c_dot_est, r_cw_c_ddot_est, accel_meas_offset] = ...
     [r_jc_c, pair_r_cw, P_c, invR] = getAccNumLoc (0.04,0.04,0.04);
 
     %% The Equation of Motion of the Brick (NEED ANGULAR VELOCITY)    
-    w_jc_c = deg2rad(Model.ws)';
-    w_jc_c_dot = deg2rad(Model.wdots)';
+    w_jc_c = Model.ws';
+    w_jc_c_dot = Model.wdots';
 %     w_jc_c_dot = [diff(w_jc_c(1,:));diff(w_jc_c(2,:));diff(w_jc_c(3,:))]/dt;
 %     w_jc_c_dot(:,2:end+1) = w_jc_c_dot;
 %     w_jc_c_dot(:,1) = w_jc_c_dot(:,2)/10;
@@ -76,8 +76,8 @@ function [w_jc_c_est, w_jc_c_dot_est, r_cw_c_ddot_est, accel_meas_offset] = ...
                 qnext = q(:,i) + delt*qdot;           % integration
                 q(:,i+1) = qnext/norm(qnext);         % normalization
 
-                Rb2w = getRw2b(q(:,i));
-                r_cw_w_ddot_est(:,i) = Rb2w'*r_cw_c_ddot_est(:,i);
+                Rb2w = getRw2b(q(:,i))';
+                r_cw_w_ddot_est(:,i) = Rb2w*r_cw_c_ddot_est(:,i);
             end
 
     end

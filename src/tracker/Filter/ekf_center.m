@@ -65,17 +65,22 @@ for i = 1:numel(Model.ts)+1
        accel_meas = Model.accel_meas(i,:)'; % Naive first iteration
    else
        wdot_gyro = (gyro_meas - prev_gyro) / Model.dt;
-       %pred_linacc = cross(wdot_gyro + gyro_meas.*gyro_meas,[0.04,0.04,0.04]);
-       r = [0.04,0.04,0.04];
-       pred_linacc = cross(wdot_gyro,r) + cross(gyro_meas,cross(gyro_meas,r));
-       %pred_linacc = cross(gyro_meas,cross(gyro_meas,r));
+       wdot_gyro_rad = wdot_gyro * pi/180;
+       w_gyro_rad = gyro_meas * pi/180;
+       
+       r = [0.04,0.04,-0.04];
+       pred_linacc = cross(wdot_gyro_rad,r) + cross(w_gyro_rad,cross(w_gyro_rad,r));
        accel_meas = Model.accel_meas_offset(i,:)' - pred_linacc';
        
-       % accel_meas_offset = grav_vec + wdot x r + w x (w x r)
+       % FLAG
+       %accel_meas = Quaternion.Rwb(q)*accel_meas;
    end
    prev_gyro = gyro_meas;
    
-   %pred_linacc = cross(Model.wdots(i,:) + cross(w,w),[0.04,0.04,0.04]);
+   if i == 10
+       disp('hi');
+   end
+      
    mag_meas = Model.mag_meas(i,:)';
    
    y = vertcat(accel_meas,mag_meas);
@@ -153,7 +158,7 @@ if strcmp(user,'y')
     nquats = size(Model.qs,1);
     i_body = [1,0,0]'; j_body = [0,1,0]'; k_body = [0,0,-1]';
     % Plot rotation from each quaternion
-    for i = 1:nquats / 2 % just doing HALF right now
+    for i = 1:nquats
         truth = Model.qs(i,:)';
         est = mu_hist(i,:)';
         

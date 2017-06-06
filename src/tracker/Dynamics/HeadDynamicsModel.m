@@ -19,14 +19,14 @@ classdef HeadDynamicsModel
         mag;
         % Simulated measurements, body frame
         accel_meas; % m/s^2
-        gyro_meas; % deg/s
+        gyro_meas; % rad/s
         mag_meas; % Gauss
         
         accel_meas_offset; % m/s^2
-%         accel_offset = [0.04, 0.04, -0.04]; % m
+        % accel_offset = [0.04, 0.04, -0.04]; % m
         
-        ws_cons % deg/s
-        wdots_cons % deg/s^2
+        ws_cons % rad/s
+        wdots_cons % rad/s^2
         accel_meas_cons %m/s^2
         
         env_model; % Reference gravity, mag field vectors
@@ -39,7 +39,7 @@ classdef HeadDynamicsModel
             % Generate pre-defined angular velocity values
             obj.dt = 0.01;
             t0 = obj.dt;
-            tf = 3; % FLAG
+            tf = 60;
             obj.ts = t0:obj.dt:tf;
             
             % Get w, wdot values
@@ -47,15 +47,15 @@ classdef HeadDynamicsModel
             [wvals,wdotvals,handles] = AxisAngVals(axes,obj.ts);
             
             % Add in initial conditions
-            w0 = [0,0,0] * 180/pi;
-            wdot0 = zeros(1,3) * 180/pi;
+            w0 = [0,0,0];
+            wdot0 = zeros(1,3);
             for i = 1:numel(handles)
                 wdot_ftn = handles{i};
-                wdot0(i) = wdot_ftn(0) * 180/pi;
+                wdot0(i) = wdot_ftn(0);
             end
                         
-            obj.ws = vertcat(w0, wvals * 180/pi);
-            obj.wdots = vertcat(wdot0, wdotvals * 180/pi);
+            obj.ws = vertcat(w0, wvals);
+            obj.wdots = vertcat(wdot0, wdotvals);
             
             % Integrate quaternions over time history
             q0 = [1,0,0,0]';
@@ -74,10 +74,10 @@ classdef HeadDynamicsModel
             
             % Noise parameters based on imuAnalysis.m
             gyro_mu = zeros(3,1); 
-            gyro_sigma = [0.0073, 0, 0;
-                          0, 0.0091, 0;
-                          0, 0, 0.0075];
-            gyro_bias = [-0.0388, 0.1440, -0.1383];
+            gyro_sigma = pi/180*[0.0073, 0, 0;
+                                 0, 0.0091, 0;
+                                 0, 0, 0.0075];
+            gyro_bias = pi/180*[-0.0388, 0.1440, -0.1383];
             obj.gyro = Gyroscope(obj, gyro_mu, gyro_sigma, gyro_bias);
             
             % Noise parameters based on imuAnalysis.m
@@ -87,7 +87,7 @@ classdef HeadDynamicsModel
                                  0.0255, -0.0061, 0.3319];            
             obj.mag = Magnetometer(obj, mag_mu, mag_sigma);
             
-            noisy = false; % FLAG: Enable for noise
+            noisy = true; % FLAG: Enable for noise
             obj.accel_meas = obj.accel.measurements(noisy);
             obj.gyro_meas = obj.gyro.measurements(noisy);
             obj.mag_meas = obj.mag.measurements(noisy);
