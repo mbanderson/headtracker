@@ -1,4 +1,4 @@
-function [rms,errs] = ekf(gyro_type,accel_type,tf,noisy,gifname)
+function [rms,errs,Model] = ekf(gyro_type,accel_type,tf,noisy,gifname)
 %EKF Implements EKF filter for head-tracking.
 %   INPUTS:
 %       gyro_type - (int) Flag to indicate angular rate measurement type
