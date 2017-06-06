@@ -5,16 +5,6 @@ wrapToPi = @(x) mod(x+pi,2*pi)-pi;
 %% Simulate Head Movement and Measurements
 Model = HeadDynamicsModel();
 
-% () = a_g + (wdot + w x w)*r + v
-% Want a_g
-
-% Ground truth in the body frame:
-% a_truth_body = a_truth_grav_vec + (wdot_truth + w_truth x w_ruth)*offset
-% + v
-%
-% a_expected = a_g_expected + (gyrodot + w_gyro x w_gyro)*offset + v
-% a_expected = Rwb(mu) + (gyrodot + gyro x gyro)*offset + v
-
 
 %% Helper Functions
 % Expected measurement models
@@ -158,7 +148,7 @@ if strcmp(user,'y')
     nquats = size(Model.qs,1);
     i_body = [1,0,0]'; j_body = [0,1,0]'; k_body = [0,0,-1]';
     % Plot rotation from each quaternion
-    for i = 1:nquats
+    for i = 1:nquats-1
         truth = Model.qs(i,:)';
         est = mu_hist(i,:)';
         
@@ -191,9 +181,9 @@ if strcmp(user,'y')
         im = frame2im(frame);
         [imind,cm] = rgb2ind(im,256);
         if i == 1
-            imwrite(imind,cm,gifname,'gif','Loopcount',inf);
+            imwrite(imind,cm,gifname,'gif','Loopcount',inf,'DelayTime',0);
         else
-            imwrite(imind,cm,gifname,'gif','WriteMode','append');
+            imwrite(imind,cm,gifname,'gif','WriteMode','append','DelayTime',0);
         end
     end
     
