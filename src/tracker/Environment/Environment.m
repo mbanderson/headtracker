@@ -36,8 +36,8 @@ classdef Environment < handle
     methods (Access = private)
         function updateGravityVector(obj)
             % Returns gravity vector in m/s^2, NED frame
-            %obj.grav_vec = [0, 0, obj.g]';
-            obj.grav_vec = [0,0,1]';
+            obj.grav_vec = [0, 0, -obj.g]';
+            %obj.grav_vec = [0,0,1]';
         end
         function updateFieldVector(obj)            
             % Returns magnetic field in Gauss, NED frame

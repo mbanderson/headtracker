@@ -23,8 +23,8 @@ function [r_jw_c_ddot, r_jc_c_ddot, r_cw_c_ddot] = constelAccelGen(w_jc_c, w_jc_
                    w(3), 0, -w(1);
                   -w(2), w(1), 0  ];   
               
-    %gAccel = -9.81;     % m/s^2
-    gAccel = 1; % NED, normalized
+    gAccel = -9.81;     % m/s^2
+    % gAccel = 1; % NED, normalized
     r_cw_w_ddot = [0; 0; gAccel];
 
     Q = 1.0e-04*[0.1042, 0, 0.0004;

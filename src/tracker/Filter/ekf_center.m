@@ -19,10 +19,11 @@ Model = HeadDynamicsModel();
 %% Helper Functions
 % Expected measurement models
 % Accelerometer model, Jacobian
-accel_expected = @(q) [2*q(2)*q(4)-2*q(1)*q(3);
+grav_mag = -1*norm(Model.env_model.grav_vec);
+accel_expected = @(q) grav_mag*[2*q(2)*q(4)-2*q(1)*q(3);
                        2*q(1)*q(2)+2*q(3)*q(4);
                        q(1)^2-q(2)^2-q(3)^2+q(4)^2];
-accel_jacob = @(q) [-2*q(3), 2*q(4), -2*q(1), 2*q(2);
+accel_jacob = @(q) grav_mag*[-2*q(3), 2*q(4), -2*q(1), 2*q(2);
                     2*q(2),  2*q(1), 2*q(4), 2*q(3);
                     2*q(1), -2*q(2) -2*q(3), 2*q(4)];
 
@@ -49,6 +50,7 @@ sigma = 50000*eye(4);
 mu_hist = zeros(numel(Model.ts)+2,4); mu_hist(1,:) = mu;
 sigma_hist = cell(numel(Model.ts)+2,1); sigma_hist{1} = sigma;
 
+prev_gyro = NaN;
 for i = 1:numel(Model.ts)+1 
    w = Model.ws(i,:)';
  
@@ -56,7 +58,24 @@ for i = 1:numel(Model.ts)+1
    q = Model.qs(i+1,:)'; % Updated q
    % Sensor Measurements in True State (with Noise)
    gyro_meas = Model.gyro_meas(i,:)'; % i since no initial measurement
-   accel_meas = Model.accel_meas(i,:)';
+   %accel_meas = Model.accel_meas(i,:)'; % Center of Head
+   
+   %accel_meas = Model.accel_meas_offset(i,:)'; % Naive Offset
+   if isnan(prev_gyro)
+       accel_meas = Model.accel_meas(i,:)'; % Naive first iteration
+   else
+       wdot_gyro = (gyro_meas - prev_gyro) / Model.dt;
+       %pred_linacc = cross(wdot_gyro + gyro_meas.*gyro_meas,[0.04,0.04,0.04]);
+       r = [0.04,0.04,0.04];
+       pred_linacc = cross(wdot_gyro,r) + cross(gyro_meas,cross(gyro_meas,r));
+       %pred_linacc = cross(gyro_meas,cross(gyro_meas,r));
+       accel_meas = Model.accel_meas_offset(i,:)' - pred_linacc';
+       
+       % accel_meas_offset = grav_vec + wdot x r + w x (w x r)
+   end
+   prev_gyro = gyro_meas;
+   
+   %pred_linacc = cross(Model.wdots(i,:) + cross(w,w),[0.04,0.04,0.04]);
    mag_meas = Model.mag_meas(i,:)';
    
    y = vertcat(accel_meas,mag_meas);

@@ -39,7 +39,7 @@ classdef HeadDynamicsModel
             % Generate pre-defined angular velocity values
             obj.dt = 0.01;
             t0 = obj.dt;
-            tf = 60;
+            tf = 3; % FLAG
             obj.ts = t0:obj.dt:tf;
             
             % Get w, wdot values
