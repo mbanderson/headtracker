@@ -100,7 +100,9 @@ mu_hist = zeros(numel(Model.ts)+2,4); mu_hist(1,:) = mu;
 sigma_hist = cell(numel(Model.ts)+2,1); sigma_hist{1} = sigma;
 
 prev_gyro = NaN; wdot_gyro = NaN;
+time_filter = zeros(1,numel(Model.ts)+1);
 for i = 1:numel(Model.ts)+1
+    tic
     w = Model.ws(i,:)';
     
     % True State
@@ -148,7 +150,11 @@ for i = 1:numel(Model.ts)+1
     
     mu_hist(i+1,:) = mu;
     sigma_hist{i+1} = sigma;
+    time_filter(i) = toc;
 end
+
+avg_time_filter = sum(time_filter)/length(time_filter)
+Model.avg_time_filter = avg_time_filter;
 
 %% Plot Simulation Results
 t_hist = horzcat(0,Model.ts);

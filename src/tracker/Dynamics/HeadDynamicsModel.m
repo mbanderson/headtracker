@@ -29,6 +29,7 @@ classdef HeadDynamicsModel
         wdots_cons % rad/s^2
         accel_meas_cons %m/s^2
         
+        avg_time_filter % s
         avg_time_cons % s
         
         env_model; % Reference gravity, mag field vectors
