@@ -8,8 +8,8 @@
 % close all
 % clc
 
-function [w_jc_c_est, w_jc_c_dot_est, r_cw_c_ddot_est, accel_meas_offset] = ...
-    constellationMeasurement(Model, noisy)
+function [w_jc_c_est, w_jc_c_dot_est, r_cw_c_ddot_est, accel_meas_offset, ...
+            avg_time_cons] = constellationMeasurement(Model, noisy)
 
     %% Initial conditions
 
@@ -49,8 +49,9 @@ function [w_jc_c_est, w_jc_c_dot_est, r_cw_c_ddot_est, accel_meas_offset] = ...
     q0 = initialQuaternion (0,0,0); % assume coincident
     q = zeros(4,tf); q(:,1) = q0;
 
+    time_cons = zeros(1,N);
     for i = 1:N
-
+        tic
         [r_jc_c_ddot_est(:,i), r_cw_c_ddot_est(:,i), w_jc_c_dot_est(:,i), ...
             W, W_centripetal, W_tangential] = ...
                 constelAccelExtract(r_jw_c_ddot(:,i), pair_r_cw);
@@ -79,9 +80,11 @@ function [w_jc_c_est, w_jc_c_dot_est, r_cw_c_ddot_est, accel_meas_offset] = ...
                 Rb2w = getRw2b(q(:,i))';
                 r_cw_w_ddot_est(:,i) = Rb2w*r_cw_c_ddot_est(:,i);
             end
-
+        time_cons(i) = toc;
     end
 
+    avg_time_cons = sum(time_cons)/N;
+    
     w_jc_c_est = w_jc_c_TA;
     
     % to have same format with Michael

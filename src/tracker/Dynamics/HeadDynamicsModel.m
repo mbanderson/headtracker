@@ -29,6 +29,8 @@ classdef HeadDynamicsModel
         wdots_cons % rad/s^2
         accel_meas_cons %m/s^2
         
+        avg_time_cons % s
+        
         env_model; % Reference gravity, mag field vectors
     end
     
@@ -95,7 +97,8 @@ classdef HeadDynamicsModel
             obj.mag_meas = obj.mag.measurements(noisy);
             
             [obj.ws_cons, obj.wdots_cons, obj.accel_meas_cons, ...
-                obj.accel_meas_offset] = constellationMeasurement(obj, noisy);
+                obj.accel_meas_offset, obj.avg_time_cons] = ...
+                    constellationMeasurement(obj, noisy);
         end 
     end
     
