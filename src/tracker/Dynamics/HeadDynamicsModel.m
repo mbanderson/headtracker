@@ -42,7 +42,7 @@ classdef HeadDynamicsModel
             obj.ts = t0:obj.dt:tf;
             
             % Get w, wdot values
-            axes = [1,2]; % 1: x-axis, 2: y-axis, 3: z-axis (or combinations)
+            axes = [2]; % 1: x-axis, 2: y-axis, 3: z-axis (or combinations)
             [wvals,wdotvals,handles] = AxisAngVals(axes,obj.ts);
             
             % Add in initial conditions
@@ -56,11 +56,15 @@ classdef HeadDynamicsModel
             obj.ws = vertcat(w0, wvals);
             obj.wdots = vertcat(wdot0, wdotvals);
             
+            R_mu = zeros(4,1);
+            R_sigma = 0.1*obj.dt^2*eye(4);
+            
             % Integrate quaternions over time history
             q0 = [1,0,0,0]';
             obj.qs = zeros(numel(obj.ts)+2,4); obj.qs(1,:) = q0;
             for i = 1:numel(obj.ts)+1
-                obj.qs(i+1,:) = QuatIntegration(obj.qs(i,:)',obj.ws(i,:)',obj.dt);
+                obj.qs(i+1,:) = QuatIntegration(obj.qs(i,:)',obj.ws(i,:)',obj.dt) + mvnrnd(R_mu,R_sigma)';
+                obj.qs(i+1,:) = obj.qs(i+1,:) / norm(obj.qs(i+1,:));
             end
             
             % Generate head-frame ("sensor inside the head") measurements
@@ -72,11 +76,11 @@ classdef HeadDynamicsModel
             obj.accel = Accelerometer(obj, accel_mu, accel_sigma);
             
             % Noise parameters based on imuAnalysis.m
-            gyro_mu = zeros(3,1); 
+            gyro_mu = zeros(3,1);
             gyro_sigma = pi/180*[0.0073, 0, 0;
                                  0, 0.0091, 0;
                                  0, 0, 0.0075];
-            gyro_bias = 50 * pi/180*[-0.0388, 0.1440, -0.1383];
+            gyro_bias = pi/180*[-0.0388, 0.1440, -0.1383];
             obj.gyro = Gyroscope(obj, gyro_mu, gyro_sigma, gyro_bias);
             
             % Noise parameters based on imuAnalysis.m

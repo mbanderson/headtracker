@@ -93,7 +93,7 @@ R_sigma = 0.1*eye(4);
 
 %% EKF
 % Initial state estimate
-mu = [1,0,0,0]';
+mu = [0.5, 0.15, 0.1, 0.25]'; % don't start exactly at x=[1,0,0,0]'
 sigma = 50000*eye(4);
 
 mu_hist = zeros(numel(Model.ts)+2,4); mu_hist(1,:) = mu;
@@ -103,7 +103,7 @@ prev_gyro = NaN; wdot_gyro = NaN;
 for i = 1:numel(Model.ts)+1
     w = Model.ws(i,:)';
     
-    % True State (no process noise)
+    % True State
     q = Model.qs(i+1,:)'; % Updated q
     
     % Sensor Measurements in True State (with Noise)
