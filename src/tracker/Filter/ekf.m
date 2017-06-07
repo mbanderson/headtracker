@@ -1,4 +1,4 @@
-function [rms,errs,Model] = ekf(gyro_type,accel_type,tf,noisy,gifname)
+function [rms,errs,Model] = ekf(gyro_type,accel_type,tf,noisy,gifname,quatname)
 %EKF Implements EKF filter for head-tracking.
 %   INPUTS:
 %       gyro_type - (int) Flag to indicate angular rate measurement type
@@ -14,16 +14,26 @@ function [rms,errs,Model] = ekf(gyro_type,accel_type,tf,noisy,gifname)
 %
 %       tf - (float) final simulation time
 %       noisy - (bool) turn noise on
-%       gifname - (str)(optional) gif file name (include extension .gif)
+%       gifname - (str)(optional) gif file name (no extension)
+%       quatoutput - (str)(optional) base name for quaternion 
+%                                    files (no extension)
 %
 
-narginchk(4,5);
+narginchk(4,6);
 if nargin < 5
-    gifname = ''; record = false;
+    gifname = '';
+    quatname = '';
+elseif nargin < 6
+    quatname = '';
 end
 if ~strcmp(gifname,'')
+    gifname = strcat(gifname,'.gif');
     record = true;
 end
+if ~strcmp(quatname,'')
+    quatname = strcat(quatname,'.txt');
+end
+
 wrapToPi = @(x) mod(x+pi,2*pi)-pi;
 
 %% Single-Stage EKF with Center of Head Measurements
@@ -169,7 +179,7 @@ end
 rms = sqrt(1/nquats*sum(errs.^2));
 
 %% Create simulation animation
-if record    
+if ~strcmp(gifname,'')  
     % Lock down figure parameters
     h = figure();
     
@@ -216,11 +226,17 @@ if record
         else
             imwrite(imind,cm,gifname,'gif','WriteMode','append','DelayTime',0);
         end
-    end
-    
+    end  
 end
 
-
+% Save quaternions to file
+if ~strcmp(quatname,'')
+    fname1 = strcat('q_',quatname);
+    fname2 = strcat('mu_',quatname);
+    
+    dlmwrite(fname1,Model.qs);
+    dlmwrite(fname2,mu_hist);
+end
 
 end
 
