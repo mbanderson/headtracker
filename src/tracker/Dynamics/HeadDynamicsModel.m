@@ -86,7 +86,6 @@ classdef HeadDynamicsModel
                                  0.0255, -0.0061, 0.3319];            
             obj.mag = Magnetometer(obj, mag_mu, mag_sigma);
             
-            noisy = true; % FLAG: Enable for noise
             obj.accel_meas = obj.accel.measurements(noisy);
             obj.gyro_meas = obj.gyro.measurements(noisy);
             obj.mag_meas = obj.mag.measurements(noisy);
