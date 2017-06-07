@@ -15,7 +15,7 @@ close all; clear all; clc;
 %       4: constellation accelerometer measurements
 
 tf = 30;
-noisy = true;
+noisy = false;
 
 % Traditional gyroscope measurements
 % Center, Naive, Compensated

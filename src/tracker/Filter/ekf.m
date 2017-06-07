@@ -93,7 +93,7 @@ R_sigma = 0.1*eye(4);
 
 %% EKF
 % Initial state estimate
-mu = [0.5, 0.15, 0.1, 0.25]'; % don't start exactly at x=[1,0,0,0]'
+mu = [1,0,0,0]';
 sigma = 50000*eye(4);
 
 mu_hist = zeros(numel(Model.ts)+2,4); mu_hist(1,:) = mu;
@@ -182,7 +182,7 @@ for i = 1:nquats
     e_i = [e_i(1); 180/pi*wrapToPi(e_i(2:4))];
     errs(i,:) = e_i;
 end
-rms = sqrt(1/nquats*sum(errs.^2));
+rms = sqrt(1/nquats*sum(errs.^2));  
 
 %% Create simulation animation
 if ~strcmp(gifname,'')  

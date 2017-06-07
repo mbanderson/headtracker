@@ -59,15 +59,11 @@ classdef HeadDynamicsModel
             obj.ws = vertcat(w0, wvals);
             obj.wdots = vertcat(wdot0, wdotvals);
             
-            R_mu = zeros(4,1);
-            R_sigma = 0.1*obj.dt^2*eye(4);
-            
             % Integrate quaternions over time history
             q0 = [1,0,0,0]';
             obj.qs = zeros(numel(obj.ts)+2,4); obj.qs(1,:) = q0;
             for i = 1:numel(obj.ts)+1
-                obj.qs(i+1,:) = QuatIntegration(obj.qs(i,:)',obj.ws(i,:)',obj.dt) + mvnrnd(R_mu,R_sigma)';
-                obj.qs(i+1,:) = obj.qs(i+1,:) / norm(obj.qs(i+1,:));
+                obj.qs(i+1,:) = QuatIntegration(obj.qs(i,:)',obj.ws(i,:)',obj.dt);
             end
             
             % Generate head-frame ("sensor inside the head") measurements
