@@ -1,4 +1,4 @@
-function [rms,errs,Model] = ekf(gyro_type,accel_type,tf,noisy,gifname,quatname)
+function [rms,errs,Model] = ekf(gyro_type,accel_type,tf,noisy,plotresults,gifname,quatname)
 %EKF Implements EKF filter for head-tracking.
 %   INPUTS:
 %       gyro_type - (int) Flag to indicate angular rate measurement type
@@ -14,16 +14,21 @@ function [rms,errs,Model] = ekf(gyro_type,accel_type,tf,noisy,gifname,quatname)
 %
 %       tf - (float) final simulation time
 %       noisy - (bool) turn noise on
+%       plotresults - (bool) plot output
 %       gifname - (str)(optional) gif file name (no extension)
-%       quatoutput - (str)(optional) base name for quaternion 
+%       quatname - (str)(optional) base name for quaternion 
 %                                    files (no extension)
 %
 
-narginchk(4,6);
+narginchk(4,7);
 if nargin < 5
+    plotresults = true;
     gifname = '';
     quatname = '';
 elseif nargin < 6
+    gifname = '';
+    quatname = '';
+elseif nargin < 7
     quatname = '';
 end
 if ~strcmp(gifname,'')
@@ -94,6 +99,8 @@ R_sigma = 0.1*eye(4);
 %% EKF
 % Initial state estimate
 mu = [1,0,0,0]';
+%mu = rand(4,1);
+%mu = mu / norm(mu);
 sigma = 50000*eye(4);
 
 mu_hist = zeros(numel(Model.ts)+2,4); mu_hist(1,:) = mu;
@@ -157,11 +164,42 @@ avg_time_filter = sum(time_filter)/length(time_filter)
 Model.avg_time_filter = avg_time_filter;
 
 %% Plot Simulation Results
+quat2ypr = @(q) [atan2(2*(q(1)*q(2)+q(3)*q(4)),1-2*(q(2)^2+q(3)^2));
+                 asin(2*(q(1)*q(3)-q(4)*q(2)));
+                 atan2(2*(q(1)*q(4)+q(2)*q(3)),1-2*(q(3)^2+q(4)^2))];
+
 t_hist = horzcat(0,Model.ts);
-for i = 1:4
-    figure();
-    plot(t_hist,[Model.qs(1:end-1,i),mu_hist(1:end-1,i)]);
-    title(sprintf('Quaternion: Component %d',i-1));
+if plotresults
+    % Quaternion plot
+    for i = 1:4
+        h = figure();
+        plot(t_hist,[Model.qs(1:end-1,i),mu_hist(1:end-1,i)]);
+        titlestr = sprintf('Quaternion Component: $q_%d$',i-1);
+        title(titlestr,'interpreter','latex','fontsize',14);
+        xlabel('Time (s)');
+        legend('Simulated','Estimated','location','northeast');
+        if i ~= 1
+            ylim([0,1]);
+        end
+        grid on;
+        savestr = sprintf('quatcompq%d',i-1);
+        print(h,savestr,'-dpng');
+        
+    end
+    
+    % Euler angle estimated vs. truth plot    
+%     truth_ypr = zeros(size(Model.qs,1),3);
+%     est_ypr = zeros(size(truth_ypr));
+%     for i = 1:size(Model.qs,1)
+%        truth_ypr(i,:) = quat2ypr(Model.qs(i,:));
+%        est_ypr(i,:) = quat2ypr(mu_hist(i,:));
+%     end
+%     
+%     for i = 1:3
+%         figure();
+%         plot(t_hist,[truth_ypr(1:end-1,i),est_ypr(1:end-1,i)]);
+%         title(sprintf('Truth and Estimated Euler Angles:'));
+%     end
 end
 
 %% Compute RMS Error

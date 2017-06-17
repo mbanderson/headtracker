@@ -45,7 +45,7 @@ classdef HeadDynamicsModel
             obj.ts = t0:obj.dt:tf;
             
             % Get w, wdot values
-            axes = [2]; % 1: x-axis, 2: y-axis, 3: z-axis (or combinations)
+            axes = [1,2,3]; % 1: x-axis, 2: y-axis, 3: z-axis (or combinations)
             [wvals,wdotvals,handles] = AxisAngVals(axes,obj.ts);
             
             % Add in initial conditions
@@ -76,9 +76,9 @@ classdef HeadDynamicsModel
             
             % Noise parameters based on imuAnalysis.m
             gyro_mu = zeros(3,1);
-            gyro_sigma = pi/180*[0.0073, 0, 0;
-                                 0, 0.0091, 0;
-                                 0, 0, 0.0075];
+            gyro_sigma = [0.0073, 0, 0;
+                          0, 0.0091, 0;
+                          0, 0, 0.0075];
             gyro_bias = pi/180*[-0.0388, 0.1440, -0.1383];
             obj.gyro = Gyroscope(obj, gyro_mu, gyro_sigma, gyro_bias);
             
