@@ -1,1 +1,4 @@
 theme: jekyll-theme-slate
+title: VR Head-Tracking
+description: A head-tracking system for virtual reality applications
+show_downloads: true
