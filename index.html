@@ -4,11 +4,11 @@
   <head>
     <meta charset='utf-8' />
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Slate is a responsive theme for GitHub Pages" />
+    <meta name="description" content="Virtual Reality Headtracker" />
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <title>VR Head-Tracking</title>
+    <title>VR Headtracker</title>
   </head>
 
   <body>
@@ -16,9 +16,9 @@
     <!-- HEADER -->
     <div id="header_wrap" class="outer">
         <header class="inner">
-          <a id="forkme_banner" href="repository_url}}">View on GitHub</a>
+          <a id="forkme_banner" href="https://github.com/mbanderson/headtracker/">View on GitHub</a>
 
-          <h1 id="project_title">Head-Tracking for Virtual Reality</h1>
+          <h1 id="project_title">Virtual Reality Headtracker</h1>
           <h2 id="project_tagline">Michael Anderson and Jin Woo Park</h2>
 
         </header>
@@ -27,143 +27,131 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h1>Background</h1>
-        
-        <figure><img src="/headtracker/images/Truth.gif"></figure>
-        
+        <h1>The Next Leap</h1>
+
+	<!-- Background -->
+	<p>
+	Virtual reality is poised to change how the world consumes entertainment, communicates, and explores new worlds. Many companies are working to bring a seamless virtual reality experience to the market. For head-mounted display systems, this requires accurately tracking the motion of the user's head. As the user looks about in the real world, the display of the virtual world must closely reflect their motion.
+	</p>
+	<!-- VR Headsets Image -->
+	<center>
+		<figure>
+			<img src="/images/GeneralImages/headsets.jpg" alt="VR Headsets" height="300" width="500" 	align="middle">
+			<figcaption>The VR community continues to grow. Source: <a href="http://heavy.com/tech/2015/07/best-vr-virtual-reality-headset-glasses-goggles-oculus-rift-specs-review/">Heavy.com</a></figcaption>	
+		</figure>
+	</center>
+
+	<!-- Our Contribution -->
+	<p>
+	We developed a virtual reality headtracker based on an Extended Kalman Filter (EKF) with representative measurement models. We evaluated our system for various sensor placements, then incorporated a novel accelerometer constellation design. Our results demonstrate the accelerometer constellation improves head-tracking performance over traditional systems, at the cost of additional computational complexity.
+	</p>
+	<!-- Side-by-Side Image -->
+	<center>
+		<figure>
+			<img src="/images/BlenderAnimations/TruthConstellationResultsForever.gif" alt="Truth vs. Constellation" height="400" width="600">
+			<figcaption>Our headtracking system accurately estimates the user's true head orientation</figcaption>
+		</figure>
+	</center>
+
         <p></p>
 
-        <h1>System Kinematics</h1>
+        <h1>Building a Headtracker</h1>
+	<p>
+	There are several approaches to constructing a headtracking sytem. <a href="http://msl.cs.illinois.edu/~lavalle/papers/LavYerKatAnt14.pdf">LaValle et al.</a> outline the process by which the Oculus Rift headset tracks user head orientation and position. The headset incorporates measurements from a 3-axis gyroscope, accelerometer, and magnetometer. We describe this approach below:
+	<ol>
+		<li>Update approximate head orientation with gyroscope measurement</li>
+		<li>Compute expected gravity and magnetic field vectors at estimated orientation</li>
+		<li>Fuse accelerometer and magnetometer measurements with computationally cheap filter</li>
+	</ol>
+	</p>
+	</p>
+	We implemented this approach and selected an EKF based on the recommendation by <a href="http://ieeexplore.ieee.org/abstract/document/1243440/?reload=true">LaViola</a>. Our system kinematics are governed by quaternion motion, and our sensor noise parameters were determined by sampling a low-cost MEMS <a href="https://www.sparkfun.com/products/11028">IMU</a> and <a href="https://www.sparkfun.com/products/retired/10530">magnetometer</a>.
+	</p>
+	<p>
+	We considered the performance of our headtracker with four different sensor placements and configurations.
+	</p>
 
-        <p></p>
-
-        <h2>Sensors and Measurement Models</h2>
-
-        <p></p>
-
-        <h3>Filter Design</h3>
-
-        <p></p>
-
-        <h4>Filter Performance</h4>
-
-        <p></p>
+	<h1>Headtracker Performance</h1>
+	<h4>Center of Head Measurements</h4>
+	<p>
+	The Center of Head configuration represents the "ideal" sensor placement, in which the accelerometer is mounted at the center of rotation of the user's head. This is extremely impractical for a head-mounted VR system, but it is a useful test case. At the center of rotation, the accelerometer does not experience any acceleration due to rotation. This provides a noisy measurement of the gravity vector and directly conveys headset orientation information. In the subsequent configurations, additional work must be performed to isolate the gravity vector.
+	</p>
+	<figure>
+			<img src="/images/GeneralImages/headsets.jpg" alt="VR Headsets" height="300" width="500" 	align="middle">
+			<figcaption>The VR community continues to grow. Source: <a href="http://heavy.com/tech/2015/07/best-vr-virtual-reality-headset-glasses-goggles-oculus-rift-specs-review/">Heavy.com</a></figcaption>	
+		</figure>
+		
 
 
-        <h3>We all like making lists</h3>
 
-        <ul>
-          <li>Red Apples</li>
-          <li>Purple Grapes</li>
-          <li>Green Kiwifruits</li>
-        </ul>
 
-        <p>Let's get crazy:</p>
+	<h4>"Naive" Head-Mounted Measurements</h4>
+	<p>
+		The "Naive" Head-Mounted configuration offsets the headset sensor package 4cm in each axis from the center of rotation. With the accelerometer offset from the center of rotation, the sensor will experience acceleration due to gravity sa well as acceleration due to rotation. In the naive configuration, the system makes no attempt to compensate for the additional terms in the accelerometer model. The filter assumes the received accelerometer measurement is a noisy gravity vector and proceeds as before.
+	</p>
 
-        <ol>
-          <li>
-            <p>This is a list item with two paragraphs. Lorem ipsum dolor
-            sit amet, consectetuer adipiscing elit. Aliquam hendrerit
-            mi posuere lectus.</p>
+	<h4>"Compensated" Head-Mounted Measurements</h4>
+	<p>
+	In the "Compensated" Head-Mounted configuration, the system attempts to compensate for the additional terms in the accelerometer terms in the accelerometer model before passing the measurement to the filter.
+	</p>
 
-            <p>Vestibulum enim wisi, viverra nec, fringilla in, laoreet
-            vitae, risus. Donec sit amet nisl. Aliquam semper ipsum
-            sit amet velit.</p>
-          </li>
-          <li><p>Suspendisse id sem consectetuer libero luctus adipiscing.</p></li>
-        </ol>
 
-        <p>What about some code <strong>in</strong> a list? That's insane, right?</p>
+	<h4>Constellation Head-Mounted Measurements</h4>
+	<p>
+	In the Constellation Head-Mounted configuration, the gyroscope has been removed from the system. Angular rate measurements are determined by a constellation of accelerometers, mounted at various points around the user's head.
+	</p>
 
-        <ol>
-          <li>
-            <p>In Ruby you can map like this:</p>
-              <code>['a', 'b'].map { |x| x.uppercase }</code>
-          </li>
-          <li>
-            <p>In Rails, you can do a shortcut:</p>
-              <code>['a', 'b'].map(&amp;:uppercase)</code>
-          </li>
-        </ol>
+	<h1>Headtracker Performance</h1>
+	
 
-        <p>Some people seem to like definition lists</p>
+	<table>
+		<tr>
+			<th></th>
+			<th>&psi; RMSE (deg)</th>
+			<th>&theta; RMSE (deg)</th>
+			<th>&phi; RMSE (deg)</th>
+			<th>Single Iter Comp (ms)</th>
+		</tr>
+		<tr>
+			<td>Center of Head</td>
+			<td>0.0354</td>
+			<td>0.0236</td>
+			<td>0.0173</td>
+			<td>0.2107</td>
+		</tr>
+		<tr>
+			<td>Naive</td>
+			<td>0.3097</td>
+			<td>3.3644</td>
+			<td>2.4064</td>
+			<td>0.2200</td>
+		</tr>
+		<tr>
+			<td>Compensated</td>
+			<td>0.3910</td>
+			<td>4.9697</td>
+			<td>2.9544</td>
+			<td>0.3311</td>
+		</tr>
+		<tr>
+			<td>Constellation</td>
+			<td>0.0752</td>
+			<td>1.0250</td>
+			<td>0.7659</td>
+			<td>0.8950</td>
+		</tr>
 
-        <dl>
-        <dt>Lower cost</dt>
-          <dd>The new version of this product costs significantly less than the previous one!</dd>
-          <dt>Easier to use</dt>
-          <dd>We've changed the product so that it's much easier to use!</dd>
-        </dl>
+		
+	</table>
 
-        <h3>I am a robot</h3>
 
-        <p>Maybe you want to print <code>robot</code> to the console 1000 times. Why not?</p>
-<pre>
-def robot_invasion
-puts("robot " * 1000)
-end
-</pre>
-
-<p>How about we throw some angle braces and ampersands in there?</p>
-
-<pre><code>
-&lt;div class="footer"&gt;
-&amp;copy; 2013 Zorg Industries
-&lt;/div&gt;
-</code></pre>
-
-        <h3>If you need to blame someone, the best way to do so is by quoting them:</h3>
-
-        <blockquote>
-        <p>I, at any rate, am convinced that He does not throw dice.</p>
-        </blockquote>
-
-        <p>Or perhaps someone a little less eloquent:</p>
-
-        <blockquote>
-        <p>I wish you'd have given me this written question ahead of time so I
-        could plan for it... I'm sure something will pop into my head here in
-        the midst of this press conference, with all the pressure of trying to
-        come up with answer, but it hadn't yet...</p>
-
-        <p>I don't want to sound like
-        I have made no mistakes. I'm confident I have. I just haven't - you
-        just put me under the spot here, and maybe I'm not as quick on my feet
-        as I should be in coming up with one.</p>
-        </blockquote>
-
-        <h2>An octocat appears!</h2>
-        <img alt="an octocat!" src="http://octodex.github.com/images/octocat-de-los-muertos.jpg" />
-        <p>My favorite octocat, illustrated by <a href="https://github.com/cameronmcefee">@cameronmceffee</a>.</p>
-
-        <h2>Table for two</h2>
-
-        <table>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Rank</th>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>Tom Preston-Werner</td>
-          <td>Awesome</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>Albert Einstein</td>
-          <td>Nearly as awesome</td>
-        </tr>
-        </table>
-        
       </section>
     </div>
 
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
-        <p class="copyright">Slate theme maintained by <a href="https://github.com/jasoncostello">Jason Costello</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+        <p>GitHub Contributors: <a href="https://github.com/mbanderson">Michael Anderson</a>, <a href="https://github.com/jinwoop">Jin Woo Park</a></p>
       </footer>
     </div>
 

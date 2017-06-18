@@ -1,4 +1,6 @@
 theme: jekyll-theme-slate
-title: VR Head-Tracking
+title: Virtual Reality Headtracker
 description: A head-tracking system for virtual reality applications
-show_downloads: true
+baseurl: "/"
+url: "https://github.com/mbanderson/headtracker/"
+show_downloads: false
