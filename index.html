@@ -74,36 +74,111 @@
 	<h1>Headtracker Performance</h1>
 	<h4>Center of Head Measurements</h4>
 	<p>
-	The Center of Head configuration represents the "ideal" sensor placement, in which the accelerometer is mounted at the center of rotation of the user's head. This is extremely impractical for a head-mounted VR system, but it is a useful test case. At the center of rotation, the accelerometer does not experience any acceleration due to rotation. This provides a noisy measurement of the gravity vector and directly conveys headset orientation information. In the subsequent configurations, additional work must be performed to isolate the gravity vector.
+	The Center of Head configuration represents the "ideal" sensor placement, in which the accelerometer is mounted at the center of rotation of the user's head. This is extremely impractical for a head-mounted VR system, but it is a useful test case. At the center of rotation, the accelerometer does not experience any acceleration due to rotation. The accelerometer, then, only measures the noisy gravity vector (which directly conveys headset orientation information). In the subsequent configurations, additional work must be performed to isolate the gravity vector.
 	</p>
-	<figure>
-			<img src="/images/GeneralImages/headsets.jpg" alt="VR Headsets" height="300" width="500" 	align="middle">
-			<figcaption>The VR community continues to grow. Source: <a href="http://heavy.com/tech/2015/07/best-vr-virtual-reality-headset-glasses-goggles-oculus-rift-specs-review/">Heavy.com</a></figcaption>	
-		</figure>
+	<center>
+	<table>
+		<tr>
+			<td>
+				<figure>
+					<img src="" alt="" height="400" width="300">
+					<figcaption>Source: <a href=""></a>
+				</figure>
+			</td>
+			<td width="300">
+				<figure>
+					<img src="/images/GeneralImages/CenterOfHeadDiagram.PNG" height="400" width="300">
+					<figcaption>Sensor placement in center of head configuration. Source: <a href="http://msl.cs.illinois.edu/~lavalle/papers/LavYerKatAnt14.pdf">Oculus VR</a>
+				</figure>
+			</td>
+		</tr>
+	</table>
+	</center>
+	
 		
-
-
-
 
 	<h4>"Naive" Head-Mounted Measurements</h4>
 	<p>
-		The "Naive" Head-Mounted configuration offsets the headset sensor package 4cm in each axis from the center of rotation. With the accelerometer offset from the center of rotation, the sensor will experience acceleration due to gravity sa well as acceleration due to rotation. In the naive configuration, the system makes no attempt to compensate for the additional terms in the accelerometer model. The filter assumes the received accelerometer measurement is a noisy gravity vector and proceeds as before.
+		The "Naive" Head-Mounted configuration places the sensors in a more realistic location. The sensor package is offset 4cm in each axis from the center of rotation (i.e. mounted on the user's head). With the accelerometer offset from the center of rotation, the sensor will experience acceleration due to gravity as well as acceleration due to rotation. In the naive configuration, the system makes no attempt to compensate for the acceleration due to rotation. The filter assumes the received accelerometer measurement is a noisy gravity vector and proceeds as before.
 	</p>
+	<center>
+	<table>
+		<tr>
+			<td>
+				<figure>
+					<img src="" alt="" height="400" width="300">
+					<figcaption>Source: <a href=""></a>
+				</figure>
+			</td>
+			<td width="300">
+				<figure>
+					<img src="/images/GeneralImages/NaiveDiagram.PNG" height="400" width="300">
+					<figcaption>Sensor placement in naive configuration. Source: <a href="http://msl.cs.illinois.edu/~lavalle/papers/LavYerKatAnt14.pdf">Oculus VR</a>
+				</figure>
+			</td>
+		</tr>
+	</table>
+	</center>
 
 	<h4>"Compensated" Head-Mounted Measurements</h4>
 	<p>
-	In the "Compensated" Head-Mounted configuration, the system attempts to compensate for the additional terms in the accelerometer terms in the accelerometer model before passing the measurement to the filter.
+	In the "Compensated" Head-Mounted configuration, the system attempts to compensate for the acceleration due to rotation. This requires knowledge of the headset angular velocity and angular acceleration, which we obtain from the gyroscope and a first order Euler approximation. Once the angular velocity and angular acceleration-dependent terms have been estimated, we subtract these values from the measured acceleration and pass the resulting gravity vector approximation to the filter.
 	</p>
-
+	<center>
+	<table>
+		<tr>
+			<td>
+				<figure>
+					<img src="" alt="" height="400" width="300">
+					<figcaption>Source: <a href=""></a>
+				</figure>
+			</td>
+			<td width="300">
+				<figure>
+					<img src="/images/GeneralImages/CompensatedDiagram.PNG" height="400" width="300">
+					<figcaption>Sensor placement in compensated configuration. Source: <a href="http://msl.cs.illinois.edu/~lavalle/papers/LavYerKatAnt14.pdf">Oculus VR</a>
+				</figure>
+			</td>
+		</tr>
+	</table>
+	</center>
 
 	<h4>Constellation Head-Mounted Measurements</h4>
 	<p>
-	In the Constellation Head-Mounted configuration, the gyroscope has been removed from the system. Angular rate measurements are determined by a constellation of accelerometers, mounted at various points around the user's head.
+	In the Constellation Head-Mounted configuration, the gyroscope has been removed from the system. Angular rate measurements are instead determined by a constellation of accelerometers. <a href="http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=5551205&tag=1">Cardou et al.</a> and <a href="http://appliedmechanics.asmedigitalcollection.asme.org/data/journals/jamcav/930885/jam_081_11_111003.pdf">Zou et al.</a> provide excellent descriptions of this technique.
 	</p>
+	<p>
+	The accelerometer constellation consists of eight accelerometers, arranged in symmetric pairs about the user's head. The key idea is that this symmetric pairing leads to cancelation when the measurements from paired accelerometers are summed. The angular acceleration terms drop out, and we can directly calculate the headset translational acceleration.
+	</p>
+	<p>
+The resulting translational acceleration then feeds into additional calculations for the headset's angular and tangential accelerations. We then approximate the angular velocity using trapezoidal integration of the computed angular acceleration.
+	</p>
+	<center>
+	<table>
+		<tr>
+			<td>
+				<figure>
+					<img src="" alt="" height="400" width="300">
+					<figcaption>Source: <a href=""></a>
+				</figure>
+			</td>
+			<td width="300">
+				<figure>
+					<img src="/images/GeneralImages/ConstellationDiagram.PNG" height="400" width="300">
+					<figcaption>Accelerometer constellation layout. Source: <a href="http://msl.cs.illinois.edu/~lavalle/papers/LavYerKatAnt14.pdf">Oculus VR</a>
+				</figure>
+			</td>
+		</tr>
+	</table>
+	</center>
 
-	<h1>Headtracker Performance</h1>
-	
-
+	<h1>Side-by-Side Comparison</h1>
+	<p>
+	We simulated the headset rotating in all three axes. The simulation framework supports any input angular velocity signal; for these simulations, the angular velocity of all three axes was chosen to be a sine wave with a 144 deg/s amplitude and 2.5s period (parameters determined by the developers rotating their heads). The initial state estimate was initialized to a random quaternion of unit length.
+	</p>
+	<p>
+	The headtracker quickly converges to the true head orientation in all of our simulations, with each of the four system configurations. However, the compensated system does experience some jitter in the state estimate, likely due to our first order Euler approximation for the angular acceleration. The root mean square error (RMSE) and filter computation times provide useful metrics for comparing each configuration:
+	</p>
 	<table>
 		<tr>
 			<th></th>
@@ -140,9 +215,13 @@
 			<td>0.7659</td>
 			<td>0.8950</td>
 		</tr>
-
-		
 	</table>
+	<p>
+	The four configurations we considered all show promising attributes for virtual reality headtracking. The performance of the accelerometer constellation is particularly exciting; while this configuration requires more than twice the computation time of other methods, the entire system is still fast enough to be integrated into a real VR rendering pipeline.
+	</p>
+	<p>
+	There are several directions for future work on this system. One opportunity is to fuse the angular rate measurements from a gyroscope with the accelerometer constellation. Another interesting study would be to implement a predictive scheme to compensate for the difference between the sensor measurement time and filter update time. Finally, we would like to deploy these systems on hardware!
+	</p>
 
 
       </section>
