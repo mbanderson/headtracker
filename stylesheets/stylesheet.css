@@ -180,7 +180,6 @@ hr {
 }
 
 table {
-  border: 1px solid #373737;
   margin-bottom: 20px;
   text-align: center;
  }
@@ -194,7 +193,6 @@ th {
 
 td {
   padding: 10px;
-  border: 1px solid #373737;
   text-align: center;
  }
 

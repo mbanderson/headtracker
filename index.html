@@ -64,7 +64,6 @@
 		<li>Fuse accelerometer and magnetometer measurements with computationally cheap filter</li>
 	</ol>
 	</p>
-	</p>
 	We implemented this approach and selected an EKF based on the recommendation by <a href="http://ieeexplore.ieee.org/abstract/document/1243440/?reload=true">LaViola</a>. Our system kinematics are governed by quaternion motion, and our sensor noise parameters were determined by sampling a low-cost MEMS <a href="https://www.sparkfun.com/products/11028">IMU</a> and <a href="https://www.sparkfun.com/products/retired/10530">magnetometer</a>.
 	</p>
 	<p>
@@ -77,18 +76,18 @@
 	The Center of Head configuration represents the "ideal" sensor placement, in which the accelerometer is mounted at the center of rotation of the user's head. This is extremely impractical for a head-mounted VR system, but it is a useful test case. At the center of rotation, the accelerometer does not experience any acceleration due to rotation. The accelerometer, then, only measures the noisy gravity vector (which directly conveys headset orientation information). In the subsequent configurations, additional work must be performed to isolate the gravity vector.
 	</p>
 	<center>
-	<table>
+	<table cellpadding="0" cellspacing="0" border="0">
 		<tr>
-			<td>
+			<td valign="top">
 				<figure>
-					<img src="" alt="" height="400" width="300">
-					<figcaption>Source: <a href=""></a>
+					<img src="/images/ConfigurationResults/centerofhead.gif" alt="Center of Head Simulation" height="400" width="500">
+					<figcaption>Center of Head Simulation</figcaption>
 				</figure>
 			</td>
-			<td width="300">
+			<td valign="top" width="300">
 				<figure>
 					<img src="/images/GeneralImages/CenterOfHeadDiagram.PNG" height="400" width="300">
-					<figcaption>Sensor placement in center of head configuration. Source: <a href="http://msl.cs.illinois.edu/~lavalle/papers/LavYerKatAnt14.pdf">Oculus VR</a>
+					<figcaption>Sensor placement in center of head configuration. Source: <a href="http://msl.cs.illinois.edu/~lavalle/papers/LavYerKatAnt14.pdf">Oculus VR</a></figcaption>
 				</figure>
 			</td>
 		</tr>
@@ -104,16 +103,16 @@
 	<center>
 	<table>
 		<tr>
-			<td>
+			<td valign="top">
 				<figure>
-					<img src="" alt="" height="400" width="300">
-					<figcaption>Source: <a href=""></a>
+					<img src="/images/ConfigurationResults/naive.gif" alt="Naive Simulation" height="400" width="500">
+					<figcaption>Naive Simulation</figcaption>
 				</figure>
 			</td>
-			<td width="300">
+			<td valign="top" width="300">
 				<figure>
 					<img src="/images/GeneralImages/NaiveDiagram.PNG" height="400" width="300">
-					<figcaption>Sensor placement in naive configuration. Source: <a href="http://msl.cs.illinois.edu/~lavalle/papers/LavYerKatAnt14.pdf">Oculus VR</a>
+					<figcaption>Sensor placement in naive configuration. Source: <a href="http://msl.cs.illinois.edu/~lavalle/papers/LavYerKatAnt14.pdf">Oculus VR</a></figcaption>
 				</figure>
 			</td>
 		</tr>
@@ -127,16 +126,16 @@
 	<center>
 	<table>
 		<tr>
-			<td>
+			<td valign="top">
 				<figure>
-					<img src="" alt="" height="400" width="300">
-					<figcaption>Source: <a href=""></a>
+					<img src="/images/ConfigurationResults/compensated.gif" alt="Compensated Simulation" height="400" width="500">
+					<figcaption>Compensated Simulation</figcaption>
 				</figure>
 			</td>
-			<td width="300">
+			<td valign="top" width="300">
 				<figure>
 					<img src="/images/GeneralImages/CompensatedDiagram.PNG" height="400" width="300">
-					<figcaption>Sensor placement in compensated configuration. Source: <a href="http://msl.cs.illinois.edu/~lavalle/papers/LavYerKatAnt14.pdf">Oculus VR</a>
+					<figcaption>Sensor placement in compensated configuration. Source: <a href="http://msl.cs.illinois.edu/~lavalle/papers/LavYerKatAnt14.pdf">Oculus VR</a></figcaption>
 				</figure>
 			</td>
 		</tr>
@@ -156,16 +155,16 @@ The resulting translational acceleration then feeds into additional calculations
 	<center>
 	<table>
 		<tr>
-			<td>
+			<td valign="top">
 				<figure>
-					<img src="" alt="" height="400" width="300">
-					<figcaption>Source: <a href=""></a>
+					<img src="/images/ConfigurationResults/constellation.gif" alt="Constellation Simulation" height="400" width="500">
+					<figcaption>Constellation Simulation</figcaption>
 				</figure>
 			</td>
-			<td width="300">
+			<td valign="top" width="300">
 				<figure>
 					<img src="/images/GeneralImages/ConstellationDiagram.PNG" height="400" width="300">
-					<figcaption>Accelerometer constellation layout. Source: <a href="http://msl.cs.illinois.edu/~lavalle/papers/LavYerKatAnt14.pdf">Oculus VR</a>
+					<figcaption>Accelerometer constellation layout. Source: <a href="http://msl.cs.illinois.edu/~lavalle/papers/LavYerKatAnt14.pdf">Oculus VR</a></figcaption>
 				</figure>
 			</td>
 		</tr>
