@@ -3,6 +3,11 @@ classdef Accelerometer < Sensor
     %   Initializes accelerometer object to sample measurements from the
     %   center of head simulator.
     %
+    %   INPUTS:
+    %       model - (DynamicsModel) models center of neck motion
+    %       mu - (3x1 vector) Gaussian noise mean
+    %       sigma - (3x3 matrix) Gaussian noise covariance
+    %    
     
     properties
     end

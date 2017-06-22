@@ -6,6 +6,12 @@ classdef Sensor
     %   the head measurements"). These values can feed into subsequent
     %   calculations for head-mounted sensor values.
     %
+    %   INPUTS:
+    %       type - (str) sensor type: 'accel', 'gyro', or 'mag'
+    %       model - (HeadDynamicsModel) center of head motion
+    %       mu - (3x1 vector) Gaussian noise mean
+    %       sigma - (3x3 matrix) Gaussian noise covariance
+    %    
     
     properties
         % Sensor type

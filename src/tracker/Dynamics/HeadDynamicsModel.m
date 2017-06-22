@@ -36,7 +36,16 @@ classdef HeadDynamicsModel
     end
     
     methods
-        function obj = HeadDynamicsModel(tf,noisy)
+        function obj = HeadDynamicsModel(tf,noisy,axes)
+            %% 1: x-axis, 2: y-axis, 3: z-axis (or combinations)
+            narginchk(1,3);
+            if nargin < 2
+                noisy = false;
+                axes = [1,2,3];
+            elseif nargin < 3
+                axes = [1,2,3];
+            end
+            
             obj.env_model = Environment();
             
             % Generate pre-defined angular velocity values
@@ -45,7 +54,6 @@ classdef HeadDynamicsModel
             obj.ts = t0:obj.dt:tf;
             
             % Get w, wdot values
-            axes = [1,2,3]; % 1: x-axis, 2: y-axis, 3: z-axis (or combinations)
             [wvals,wdotvals,handles] = AxisAngVals(axes,obj.ts);
             
             % Add in initial conditions

@@ -3,6 +3,12 @@ classdef Gyroscope < Sensor
     %   Initializes gyroscope object to sample measurements from the
     %   center of head simulator.
     %
+    %   INPUTS:
+    %       model - (HeadDynamicsModel) models center of neck motion
+    %       mu - (3x1 vector) Gaussian noise mean
+    %       sigma - (3x3 matrix) Gaussian noise covariance
+    %       bias - (3x1 vector) static gyroscope bias
+    %
     
     properties
         static_bias;
@@ -28,6 +34,11 @@ classdef Gyroscope < Sensor
             obj.static_bias = bias;
         end
         function ys = measurements(obj,noisy)
+           %    Generate gyroscope measurements, with optional static bias
+           %    INPUTS:
+           %        noisy - (bool) True to add static bias to measurements
+           %
+            
            ys = measurements@Sensor(obj,noisy);
            if noisy
                for i = 1:size(ys,1)

@@ -1,6 +1,11 @@
 function [C] = magnetometer_jacob(m,q)
 %MAGNETOMETER_JACOB Creates measurement jacobian for magnetometer model.
-%   
+%   INPUTS:
+%       m  - (3x1) magnetometer measurement
+%       q - (4x1) quaternion of state estimate, following prediction 
+%   OUTPUTS:
+%       C - (3x4) measurement Jacobian for magnetometer model
+%
 
 f1_q0 = -2*q(4)*m(2)+2*q(3)*m(3);
 f1_q1 = 2*q(3)*m(2)+2*q(4)*m(3);

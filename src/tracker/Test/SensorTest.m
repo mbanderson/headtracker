@@ -1,7 +1,8 @@
 %% Center of Head Test
 close all; clear all; clc;
 %% Initialize Model
-Test = HeadDynamicsModel();
+tf = 10; noisy = true; axes = 1;
+Test = HeadDynamicsModel(tf,noisy,axes);
 %% Plot Results
 t_hist = horzcat(0,Test.ts);
 %% Angular Velocity Test

@@ -1,6 +1,12 @@
 classdef Quaternion
     %QUATERNION Helper class for quaternion representations.
-    %   Provides helper functions for vector rotations, etc.
+    %   This class assumes a scalar-first quaternion model. Additional
+    %   static methods provide helper functions for vector rotations, etc.
+    %
+    %   USAGE:
+    %       obj = Quaternion(q)
+    %   INPUTS:
+    %       q - (4x1) array representing scalar-first quaternion
     %
     
     properties
@@ -13,6 +19,8 @@ classdef Quaternion
             if nargin < 1
                q = [1,0,0,0]';
             end
+            assert(numel(q)==4,'Quaternion must be of length 4.');
+            
             obj.q = q;
         end
     end

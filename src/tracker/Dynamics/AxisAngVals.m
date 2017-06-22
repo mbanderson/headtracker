@@ -19,8 +19,8 @@ if nargin < 2
     tf = 60;
     ts = t0:dt:tf; % sim time, s
 end
-w = zeros(numel(ts),3); % RAD/S
-wdot = zeros(numel(ts),3); % RAD/S^2
+w = zeros(numel(ts),3); % rad/s
+wdot = zeros(numel(ts),3); % rad/s^2
 
 nominal_head_rate = 144; % deg/s
 amp = nominal_head_rate * pi/180; % max angular velocity, rad/s
