@@ -19,4 +19,4 @@ implements an accelerometer constellation system used to compute angular rate
 measurements.
 
 # Results
-![alt test](https://github.com/mbanderson/headtracker/blob/gh-pages/images/BlenderAnimations/TruthConstellationResultsForever.gif "Truh vs. Constellation" height="200" width=300")
+![alt test](https://github.com/mbanderson/headtracker/blob/gh-pages/images/BlenderAnimations/TruthConstellationResultsForever.gif "Truh vs. Constellation" height="200" width="300")
