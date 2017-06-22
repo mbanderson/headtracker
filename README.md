@@ -17,6 +17,3 @@ models. [data](/src/data) contains data collection and analysis scripts, used
 to obtain realistic sensor noise parameters. [accelerometer](/src/accelerometer) 
 implements an accelerometer constellation system used to compute angular rate
 measurements.
-
-# Results
-![alt text](https://github.com/mbanderson/headtracker/blob/gh-pages/images/BlenderAnimations/TruthConstellationResultsForever.gif | height=100px)
