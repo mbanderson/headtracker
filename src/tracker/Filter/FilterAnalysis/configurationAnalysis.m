@@ -14,8 +14,9 @@ close all; clear all; clc;
 %       3: compensated head-mounted measurements
 %       4: constellation accelerometer measurements
 
-tf = 30;
-noisy = false;
+options = ekfOptions();
+options.tf = 30;
+options.noisy = false;
 
 % Traditional gyroscope measurements
 % Center, Naive, Compensated
@@ -27,12 +28,12 @@ colorstrs = {'b:','r-','g--','k-.'};
 widths = {.2,.2,.2,2.5};
 for i = 1:4
     if i == 4
-        gyro = 2; accel = 4;
+        options.gyro_type = 2; options.accel_type = 4;
     else
-        gyro = 1; accel = i;
+        options.gyro_type = 1; options.accel_type = i;
     end
     
-    [rms,errs,model] = ekf(gyro,accel,tf,noisy);
+    [rms,errs,model] = ekf(options);
     ts = horzcat(0,model.ts);
     
     resultstr = sprintf('(phi,th,psi)=(%.3f, %.3f, %.3f) [deg/s]',rms(2),rms(3),rms(4));

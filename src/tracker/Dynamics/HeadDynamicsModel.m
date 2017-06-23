@@ -25,12 +25,13 @@ classdef HeadDynamicsModel
         accel_meas_offset; % m/s^2
         % accel_offset = [0.04, 0.04, -0.04]; % m
         
-        ws_cons % rad/s
-        wdots_cons % rad/s^2
-        accel_meas_cons %m/s^2
+        ws_cons; % rad/s
+        wdots_cons; % rad/s^2
+        accel_meas_cons; %m/s^2
         
-        avg_time_filter % s
-        avg_time_cons % s
+        avg_time_filter; % s
+        avg_time_cons; % s
+        avg_time_total; % s
         
         env_model; % Reference gravity, mag field vectors
     end

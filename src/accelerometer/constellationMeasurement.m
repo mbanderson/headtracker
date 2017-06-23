@@ -82,8 +82,7 @@ function [w_jc_c_est, w_jc_c_dot_est, r_cw_c_ddot_est, accel_meas_offset, ...
             end
         time_cons(i) = toc;
     end
-
-    avg_time_cons = sum(time_cons)/N
+    avg_time_cons = sum(time_cons)/N;
     
     w_jc_c_est = w_jc_c_TA;
     

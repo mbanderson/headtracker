@@ -13,13 +13,14 @@ close all; clear all; clc;
 %       3: compensated head-mounted measurements
 %       4: constellation accelerometer measurements
 
-tf = 15;
-noisy = true;
-plotresults = true;
+options = ekfOptions();
+options.tf = 15;
+options.noisy = true;
+options.plotresults = true;
 
 %% Single Sim
-gyro = 1; accel = 3;
-[rms,errs,model] = ekf(gyro,accel,tf,noisy,plotresults);
+options.gyro_type = 1; options.accel_type = 3;
+[rms,errs,model] = ekf(options);
 
 %% Error Analysis
 % Traditional gyroscope measurements
@@ -37,12 +38,15 @@ all_models = cell(numel(colorstrs),1);
 all_resultstrs = cell(numel(colorstrs),1);
 for i = 1:4
     if i == 4
-        gyro = 2; accel = 4;
+        options.gyro_type = 2; options.accel_type = 4;
     else
-        gyro = 1; accel = i;
+        options.gyro_type = 1; options.accel_type = i;
     end
     
-    [rms,errs,model] = ekf(gyro,accel,tf,noisy,plotresults);
+    [rms,errs,model] = ekf(options);
+    fprintf('Gyro Type: %d, Accel Type: %d\n',options.gyro_type,options.accel_type);
+    fprintf('Average filter loop time (ms): %.5f\n',model.avg_time_total * 1000);
+    
     all_rms{i} = rms;
     all_errs{i} = errs;
     all_models{i} = model;
