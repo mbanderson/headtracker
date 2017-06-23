@@ -28,7 +28,7 @@
 %     0.0255   -0.0061    0.3319
 
 %% Data Read
-fname = 'C:\Users\Michael\Desktop\recorder\saved\recorder_052317205217_longdwell.txt';
+fname = 'imu_mag_data.txt';
 A = dlmread(fname);
 
 T_COL = 1;
